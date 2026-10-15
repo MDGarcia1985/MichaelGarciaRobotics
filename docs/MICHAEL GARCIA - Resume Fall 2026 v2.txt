@@ -1,0 +1,66 @@
+﻿MICHAEL GARCIA
+michael@mandedesign.studio  •  928.853.6212  • West Michigan, United States  •   www.mandedesign.studio
+________________
+
+
+SUMMARY
+Engineering and product-development leader with 10+ years of experience developing electromechanical systems, robotics, prototypes, and manufacturing-ready products across medical, industrial, automation, and defense-adjacent applications. Experienced in leading cross-functional teams, designing engineering and revision-control workflows. Lead, coordinate, and support complex programs from ideation to requirement definitions through prototyping, validation, manufacturing transition, and pilot build.
+________________
+
+
+EXPERIENCE
+M&E Design, DIRECTOR OF RESEARCH & DEVELOPMENT
+2015 - Present
+Led robotics and electromechanical projects from concept and prototype to final system integration. This project combined mechanical design, embedded electronics, sensing, controls, software, and manufacturing • Developed autonomous and semi-autonomous systems, including tracked utility vehicles, wildlife-deterrence platforms, wearable electronics, and sensor-driven training devices • Defined system architecture, component interfaces, control logic, and integration requirements for projects using microcontrollers, sensors, actuators, embedded software, and custom mechanical assemblies • Built and evaluated prototypes using CAD, additive manufacturing, PCB-level electronics, embedded controllers, and rapid fabrication methods • Developed repeatable design, test, and integration workflows for complex electromechanical systems with emphasis on manufacturability, maintainability, and subsystem interoperability • Coordinated suppliers, fabrication methods, documentation, budgets, and technical reviews to move projects from early requirements into buildable systems.[a]
+
+
+Viking Group Inc., CAD MANAGER (retitled to Director of Engineering Projects)
+2023 - 2025
+Architected and administered automated ECR, prototype, and legacy-product migration workflows, supporting approximately 60,000 parts and assemblies across six advanced automation facilities • Implemented role-based permissions and workflow controls for engineering users across three continents, improving consistency and reducing manual revision-control errors • Built approval-agency data and reporting solutions using PDM, Power Automate, Power BI, and Excel, reconciling certification status against internal products and revisions.
+
+
+Encoris, LLC, DESIGN ENGINEER
+2021 - 2023
+Designed and launched surgical and medical training models integrating anatomical, mechanical, material, and manufacturing requirements • Produced client-facing renderings, display models, and functional prototypes to support design review, iteration, and product development • Operated and maintained Stratasys and Objet additive-manufacturing systems for rapid prototyping and production of medical training components • Created manufacturing drawings and technical documentation for downstream fabrication, assembly, and compliance support • Redesigned PDM and file-organization methods to resolve naming, character,
+and file-limit issues and improve engineering data management.
+
+
+United States Army, INFANTRY / PETROLEUM SUPPLY SPECIALIST
+2014 - Present
+Managed petroleum storage, accountability, distribution, and logistics support for field and operational missions • Led personnel during tactical operations, equipment maintenance, and logistics activities to maintain readiness and safe execution • Supported administrative and operational-response functions. including records management, documentation, and processing of mission-related information • Conducted after-action reviews to identify operational gaps, document lessons learned, and improve future mission planning and execution • Maintained equipment, fuel, and supply accountability in accordance with Army procedures and
+mission requirements. 
+________________
+
+
+EDUCATION
+BACHELOR OF SCIENCE • ROBOTICS ENGINEERING
+University of Advancing Technology (UAT)
+Focus: C++, Python, microcontrollers, autonomous systems, mechatronics, kinematics, wearables, PCB/processor design
+
+
+BACHELOR OF SCIENCE • DIGITAL MAKER AND FABRICATION
+University of Advancing Technology (UAT)
+Focus: Bio-mimetic systems, additive manufacturing, materials science, physics
+________________
+
+
+LICENSES & CERTIFICATIONS
+SOLIDWORKS PDM ADVANCED ADMINISTRATOR
+GoEngineer • S52277 • Issued Oct 2023
+
+
+SOLIDWORKS PDM ADMINISTRATOR
+GoEngineer • S49099 • Issued Jun 2023
+________________
+
+
+SKILLS
+Engineering leadership • mentoring • team building • advanced manufacturing • additive manufacturing • prototyping • Robotics • embedded systems integration • Product design • DFM
+________________
+
+
+HONORS & AWARDS
+Leadership Award
+University of Advancing Technology • May 2026
+Demonstrated outstanding leadership for a Production Studio team.
+[a]*Explain the projects you did, then the skills used on them. Ex: Developed a semi-autonomous wildlife deterrent machine. Built prototypes using CAD, then created with additive manufacturing 3D printing, PCB electronics. Used microcontrollers and custom-designed sensors.

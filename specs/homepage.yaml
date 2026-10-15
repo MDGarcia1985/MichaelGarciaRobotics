@@ -1,0 +1,75 @@
+homepage:
+    background:
+        color: plum
+
+    hero:
+        title:
+            value: "Michael Garcia"
+            style: hero_title
+            color: burnt_auburn
+
+        position:
+            horizontal: center
+            vertical:
+                region: middle_third
+                alignment: bottom
+
+    navigation:
+        style: primary_navigation
+        color: burnt_auburn
+        hover_style: navigation_hover
+
+        position:
+            horizontal:
+                alignment: title
+            vertical:
+                relation: tangent
+                target: title
+                target_edge: bottom
+
+        clickable_area:
+            shape: box
+            visible: false
+            padding_px: 5
+
+        separator:
+            value: "|"
+            interactive: false
+
+        items:
+            robotics:
+                value: "Robotics"
+                destination: robotics_projects
+            software:
+                value: "Software"
+                destination: software_projects
+            design:
+                value: "Design"
+                destination: design_projects
+
+    header:
+        height_px: 80
+
+    footer:
+        height_px: 80
+
+    engagement:
+        enabled: true
+        delay_ms: 6000
+        once_per_session: true
+        title: "Thanks for visiting!"
+        prompt: "What Would you like to explore first?"
+        explanation: "Your choice only changes what the page emphasizes. Nothing is submitted or stored beyond this browser session."
+        choices:
+            robotics:
+                label: "Robotics"
+                target: robotics
+            software:
+                label: "Software"
+                target: software
+            design:
+                label: "Design"
+                target: design
+            wander:
+                label: "Just looking"
+                target: none

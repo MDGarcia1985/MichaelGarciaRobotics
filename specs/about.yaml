@@ -1,0 +1,9 @@
+about:
+    background:
+        color: plum
+    title:
+        value: "About"
+        color: burnt_auburn
+    body:
+        - "This starter intentionally leaves biography and resume content for later refinement."
+        - "The page exists now so navigation behavior is complete and testable."

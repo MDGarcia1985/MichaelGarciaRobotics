@@ -1,0 +1,73 @@
+# Global website specification.
+# Design values live here so page files can reference named tokens.
+
+website:
+    name: "Michael Garcia Robotics"
+
+    design_tokens:
+        colors:
+            plum: "#120A07"
+            burgundy: "#56161D"
+            teal: "#305858"
+            burnt_auburn: "#E8A80B"
+
+        typography:
+            hero_title:
+                font_family: "Roboto, Arial, sans-serif"
+                font_size_px: 150
+                font_weight: 400
+                italic: false
+
+            primary_navigation:
+                font_family: "Roboto, Arial, sans-serif"
+                font_size_px: 30
+                font_weight: 400
+                italic: false
+
+            utility_navigation:
+                font_family: "Roboto, Arial, sans-serif"
+                font_size_px: 40
+                font_weight: 400
+                italic: false
+
+        interaction:
+            navigation_hover:
+                magnify: 1.1
+                duration_ms: 140
+
+    utility_navigation:
+        label: "Navigation"
+        size_px: 40
+        color: burnt_auburn
+        background:
+            color: plum
+        drop_shadow:
+            visible: true
+            color: burgundy
+        items:
+            - label: "Home"
+              destination: homepage
+            - label: "About"
+              destination: about
+            - label: "Contact"
+              destination: contact
+
+    pages:
+        homepage:
+            source: "homepage.yaml"
+        robotics_projects:
+            source: "robotics_projects.yaml"
+        software_projects:
+            source: "software_projects.yaml"
+        design_projects:
+            source: "design_projects.yaml"
+        about:
+            source: "about.yaml"
+        contact:
+            source: "contact.yaml"
+
+    architecture:
+        primary: typescript
+        specifications: yaml
+        documentation: markdown
+        plugin_interfacing: json

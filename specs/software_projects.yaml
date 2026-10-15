@@ -1,0 +1,20 @@
+software_projects:
+    background:
+        color: plum
+    hero:
+        title:
+            value: "Software"
+            style: hero_title
+            color: burnt_auburn
+        subtitle:
+            value: "Software systems, tools, agentic workflows, and language design."
+            color: burnt_auburn
+    projects:
+        - id: captains_log
+          title: "Captain's Log"
+          status: "placeholder"
+          description: "Reserved for the Captain's Log project page."
+        - id: ysl
+          title: "Yggdrasil Systems Language"
+          status: "placeholder"
+          description: "Reserved for YSL architecture and language work."

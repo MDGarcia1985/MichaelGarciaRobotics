@@ -1,0 +1,26 @@
+﻿SELECTED ENGINEERING PROJECTS
+SPINAL CURVATURE CORRECTION SURGICAL TRAINER
+·  Designed a laterally positioned thoracic spine model supporting up to 30° curvature, integrating anatomical, mechanical, materials, and manufacturing requirements.
+·  Developed a heat-cured expanding foam formulation to approximate bone texture and compliance under impact and torque during pedicle screw drilling and hammering.
+·  Converted critical internal components to low-cost consumables, reducing per-use material cost from several dollars to pennies and eliminating one-time-use trainer assemblies.
+CERVICAL SPINE SURGICAL TRAINER
+·  Engineered a multi-layer cervical anatomy trainer using cast silicone, flexible bone polymers, and variable-density materials.
+·  Designed a consumable, layered skin wrap system with realistic resistance profiles to simulate surgical access and handling.
+MEDICATION DELIVERY TRAINING DEVICE
+·  Designed an electronic training aid using Hall-effect sensors and rare-earth magnets to simulate needle proximity to nerve pathways in the lower leg.
+·  Implemented real-time visual feedback logic to indicate incorrect depth or premature
+medication delivery.
+·  Designed a simple PCB powered by a 9V battery to ensure low cost, reliability, and ease
+of maintenance.
+SMART LOCKET WEARABLE DEVICE
+·  Designed and prototyped a wearable smart locket using an ESP32-S3 microcontroller and 1.28-inch OLED display.
+·  Integrated mobile app connectivity to allow curated image uploads from multiple approved sources, reducing social-media noise while maintaining family connection.
+AUTONOMOUS WILDLIFE DETERRENCE SENTRY
+·  Developed an autonomous patrolling system for agricultural and livestock protection using edge-based AI object recognition.
+·  Integrated multiple deterrence mechanisms including pepper-ball launcher, liquid spray system, and high-frequency directional audio.
+AUTONOMOUS TRACKED UTILITY VEHICLE — In Development
+·  Designing a propane-hybrid, autonomous tracked vehicle for landscaping and snow-removal operations.
+·  Focused on modular drivetrain architecture, autonomy integration, and multi-attachment support.
+YGGDRASIL SYSTEMS — Enterprise Engineering Platform
+·  Architected a full-stack enterprise software suite integrating ERP, PDM, IDE, and EDA functionality.
+·  Designed the platform to scale from single-user workflows to global enterprise deployments with unified data and version control.

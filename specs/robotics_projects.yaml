@@ -1,0 +1,24 @@
+robotics_projects:
+    background:
+        color: plum
+
+    hero:
+        title:
+            value: "Robotics"
+            style: hero_title
+            color: burnt_auburn
+
+        subtitle:
+            value: "Machines, embedded systems, autonomy, and physical problem solving."
+            color: burnt_auburn
+
+    projects:
+        - id: soft_robotics_pneumatic
+          title: "Soft Robotics Pneumatic System"
+          status: "placeholder"
+          description: "Reserved for an embedded project demonstration or project page."
+
+        - id: embedded_control
+          title: "Embedded Control Systems"
+          status: "placeholder"
+          description: "Reserved for controller, sensing, and firmware work."

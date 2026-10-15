@@ -1,0 +1,9 @@
+contact:
+    background:
+        color: plum
+    title:
+        value: "Contact"
+        color: burnt_auburn
+    body:
+        - "Contact workflow intentionally left unimplemented in this starter."
+        - "This avoids prematurely committing to email collection, forms, or third-party services."

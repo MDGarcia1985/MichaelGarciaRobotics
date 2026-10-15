@@ -1,0 +1,20 @@
+design_projects:
+    background:
+        color: plum
+    hero:
+        title:
+            value: "Design"
+            style: hero_title
+            color: burnt_auburn
+        subtitle:
+            value: "Product design, fabrication, CAD, and physical systems."
+            color: burnt_auburn
+    projects:
+        - id: product_design
+          title: "Product Design"
+          status: "placeholder"
+          description: "Reserved for product and industrial design work."
+        - id: fabrication
+          title: "Digital Fabrication"
+          status: "placeholder"
+          description: "Reserved for additive, subtractive, and laser fabrication work."
