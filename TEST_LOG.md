@@ -593,3 +593,230 @@ TEST-2026-10-15-009; TEST-2026-10-15-008.
 #### Disposition
 
 Requested appearance configuration implemented and verified.
+
+### TEST-2026-10-15-011 — Shared header/footer static validation
+
+**Date:** 2026-10-15  
+**Time:** 21:54 America/New_York  
+**Tester:** Codex /root  
+**Level:** T0  
+**Result:** PASS
+
+#### Scope
+
+Shared page header/footer implementation and global specification contract.
+
+#### Files Under Validation
+
+src/main.ts; src/types.ts; src/styles.css; specs/main.yaml; specs/homepage.yaml; scripts/check-navigation.cjs.
+
+#### Objective
+
+Compile and bundle the changes; validate regression-script syntax.
+
+#### Preconditions
+
+Existing installed dependencies; Windows; Vite 7.3.6.
+
+#### Procedure
+
+Run npm run build and node --check scripts/check-navigation.cjs; wait for command completion.
+
+#### Expected Result
+
+Both commands succeed without errors.
+
+#### Actual Result
+
+TypeScript and Vite succeeded; 14 modules transformed; script syntax check succeeded.
+
+#### Evidence
+
+Build completed in 359ms; dist/assets/index-S7VFUM3L.css and index-Dw6r8Y-Y.js.
+
+#### Failures / Observations
+
+None. Static result only.
+
+#### Related DEVNOTES
+
+DEV-2026-10-15-004.
+
+#### Related Tests
+
+TEST-2026-10-15-009.
+
+#### Disposition
+
+Static validation complete; verify browser behavior.
+
+### TEST-2026-10-15-012 — All-page header/footer geometry and navigation regression
+
+**Date:** 2026-10-15  
+**Time:** 21:54 America/New_York  
+**Tester:** Codex /root  
+**Level:** T3  
+**Result:** PASS
+
+#### Scope
+
+T1 shared header/footer rendering, T2 global YAML integration, and T3 existing site behavior.
+
+#### Files Under Validation
+
+src/main.ts; src/types.ts; src/styles.css; specs/main.yaml; specs/homepage.yaml; scripts/check-navigation.cjs.
+
+#### Objective
+
+Verify every page matches homepage menu geometry and displays the requested name/copyright without navigation regressions.
+
+#### Preconditions
+
+Production build; installed Chrome and bundled Playwright; temporary local test server.
+
+#### Procedure
+
+Run node scripts/check-navigation.cjs C:/Users/micha/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright. Check all six routes at 1440px and 390px widths. Inspect docs/verification/shared-header-about.png. Existing script also checks menu interactions, routes, history/refresh, title at three widths, and session-only engagement.
+
+#### Expected Result
+
+Menu coordinates match Home; name is adjacent and vertically centered; 10px copyright sits bottom left; existing interactions succeed.
+
+#### Actual Result
+
+All six pages at both widths have a 40x40 menu at (14,20), Michael Garcia centered beside it with a 12px gap, and © Michael Garcia at 10px with 10px left/bottom inset. All navigation, icon appearance, title, and engagement assertions passed with no page errors. Visual review confirmed the About layout.
+
+#### Evidence
+
+docs/verification/navigation-report.json; docs/verification/shared-header-about.png; navigation-desktop.png; navigation-narrow.png; script console output.
+
+#### Failures / Observations
+
+None. Narrow-screen horizontal scrolling for the unchanged 150px homepage title remains intentional.
+
+#### Related DEVNOTES
+
+DEV-2026-10-15-004.
+
+#### Related Tests
+
+TEST-2026-10-15-011; TEST-2026-10-15-010.
+
+#### Disposition
+
+Requested changes verified and ready for review.
+
+### TEST-2026-10-16-001 — Refactored navigation script static validation
+
+**Date:** 2026-10-16  
+**Time:** 13:37 America/New_York  
+**Tester:** Codex /root  
+**Level:** T0  
+**Result:** PASS
+
+#### Scope
+
+Navigation test-script syntax and application build prerequisite.
+
+#### Files Under Validation
+
+scripts/check-navigation.cjs; existing application build inputs.
+
+#### Objective
+
+Confirm valid JavaScript and a successful production build for the browser checks.
+
+#### Preconditions
+
+Installed dependencies; Windows; Vite 7.3.6.
+
+#### Procedure
+
+Run node --check scripts/check-navigation.cjs, then npm run build.
+
+#### Expected Result
+
+Syntax check and production build succeed.
+
+#### Actual Result
+
+Both commands succeeded. Vite transformed 14 modules and built in 429ms.
+
+#### Evidence
+
+Build output retained index-S7VFUM3L.css and index-Dw6r8Y-Y.js. Application implementation was not modified by this refactor.
+
+#### Failures / Observations
+
+None. Static checks alone do not establish runtime behavior.
+
+#### Related DEVNOTES
+
+DEV-2026-10-16-001.
+
+#### Related Tests
+
+TEST-2026-10-15-011.
+
+#### Disposition
+
+Proceed to browser and cleanup validation.
+
+### TEST-2026-10-16-002 — Refactored suite regression and cleanup paths
+
+**Date:** 2026-10-16  
+**Time:** 13:37 America/New_York  
+**Tester:** Codex /root  
+**Level:** T3  
+**Result:** PASS
+
+#### Scope
+
+All seven named verifications, retained T1/T2 integration coverage, and exceptional resource cleanup.
+
+#### Files Under Validation
+
+scripts/check-navigation.cjs.
+
+#### Objective
+
+Confirm the refactor preserves checks and releases resources after success or failure.
+
+#### Preconditions
+
+Production build; installed Chrome and bundled Playwright; permitted temporary localhost server/browser.
+
+#### Procedure
+
+1. Run node scripts/check-navigation.cjs C:/Users/micha/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright.
+2. Evaluate the script in node:vm with its CLI invocation removed, stub setup resources, and replace the first verification with an intentional rejection. Assert main rejects and cleanup calls occur in order.
+3. Repeat the injected case with setup throwing after server acquisition; expect server close only.
+4. Repeat with browser.close throwing; expect browser close attempt followed by server close despite the rejection.
+
+#### Expected Result
+
+All existing browser assertions pass; every injected failure rejects while still releasing acquired resources.
+
+#### Actual Result
+
+All seven browser verifications passed with no page errors. Colors, geometry, six-page routes, keyboard/pointer controls, title widths, history/refresh, and engagement behavior were preserved. Cleanup injection passed for partial setup, verification failure, and browser teardown failure. The server was closed in all three cases.
+
+#### Evidence
+
+docs/verification/navigation-report.json and existing screenshots. Console reported PASS cleanup: partial setup; PASS cleanup: verification failure; PASS cleanup: browser teardown failure. Real browser run also exited successfully through finally teardown.
+
+#### Failures / Observations
+
+None. Injected failures were expected test inputs; exceptional cleanup was checked using controlled resource doubles rather than inducing a real browser crash.
+
+#### Related DEVNOTES
+
+DEV-2026-10-16-001.
+
+#### Related Tests
+
+TEST-2026-10-16-001; TEST-2026-10-15-012.
+
+#### Disposition
+
+Refactor verified; existing browser coverage retained and cleanup paths exercised.

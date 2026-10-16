@@ -52,6 +52,20 @@ website:
             - label: "Contact"
               destination: contact
 
+    header:
+        height_px: 80
+        brand:
+            value: "Michael Garcia"
+            font_size_px: 20
+            color: burnt_auburn
+
+    footer:
+        height_px: 80
+        copyright:
+            value: "© Michael Garcia"
+            font_size_px: 10
+            color: burnt_auburn
+
     pages:
         homepage:
             source: "homepage.yaml"

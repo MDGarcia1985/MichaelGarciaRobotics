@@ -222,3 +222,111 @@ None.
 ---
 
 ---
+
+### DEV-2026-10-15-004 — Consistent page header and copyright footer
+
+**Date:** 2026-10-15  
+**Time:** 21:54 America/New_York  
+**Engineer:** Codex /root  
+**Status:** IMPLEMENTED  
+**Type:** DECISION
+
+#### Problem
+
+Menu position differed between Home and other pages. The user requested matching Home, adding Michael Garcia beside every menu, and a bottom-left copyright at ten pixels.
+
+#### Context and Constraints
+
+Only Home specified an 80px header; other routes used the CSS minimum. Home also had an empty 80px footer while other pages had none. Retain the 40px menu, existing appearance, dropdown behavior, and 150px homepage title.
+
+#### Solutions Considered
+
+Duplicate per-page dimensions or move common header/footer settings into the global specification. Selected global settings and shared rendering helpers.
+
+#### Trade-offs
+
+A single specification avoids position drift. The footer stays in normal page flow so it follows longer content rather than covering it. Interpret ten pixels as font size and also use a 10px bottom/left inset. The adjacent header name uses 20px type and a 12px gap.
+
+#### Final Outcome
+
+All pages now use the same 80px header and footer. Menu is at x=14px, y=20px. Michael Garcia appears beside it; the footer reads © Michael Garcia at 10px. Settings live in website.header and website.footer in specs/main.yaml; removed duplicate homepage height settings.
+
+#### Implementation Impact
+
+specs/main.yaml; specs/homepage.yaml; src/main.ts; src/types.ts; src/styles.css; scripts/check-navigation.cjs; docs/verification/.
+
+#### Verification Required
+
+T0 compilation/bundle and script syntax; T1/T2 shared header/footer rendering and spec integration; T3 all-page desktop/narrow geometry and existing navigation/title/engagement regression. Recorded in TEST-2026-10-15-011 and TEST-2026-10-15-012.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-10-15-002; DEV-2026-10-15-003
+- Tests: TEST-2026-10-15-011; TEST-2026-10-15-012
+- Source: src/main.ts siteHeader/siteFooter; specs/main.yaml header/footer
+
+#### Next Steps
+
+None.
+
+#### Deferred Decisions
+
+None.
+
+---
+
+---
+
+### DEV-2026-10-16-001 — Navigation regression script structure
+
+**Date:** 2026-10-16  
+**Time:** 13:37 America/New_York  
+**Engineer:** Codex /root  
+**Status:** IMPLEMENTED  
+**Type:** DECISION
+
+#### Problem
+
+The user requested top-level constants, 3–5 small helpers, 5–7 named verification functions, a short main, finally-based teardown, and consideration of one shared context instead of repeated parameters.
+
+#### Context and Constraints
+
+Preserve existing browser coverage, CLI invocation, screenshots, and JSON report shape. Existing unrelated site/header/footer changes remain in the working tree.
+
+#### Solutions Considered
+
+Pass individual page/browser/locator/result arguments to every function, or share a context populated by setup. Selected one context, with optional local arguments only for route/viewport and screenshot filename. The HTTP callback retains Node's required request/response signature.
+
+#### Trade-offs
+
+A shared context keeps orchestration compact while making resource ownership explicit. Each verification establishes its own page state to reduce ordering dependencies. Named constants collect routes, viewport sizes, expected styles/geometry, timing, and output paths. Splitting coverage adds function documentation but makes individual checks easier to locate.
+
+#### Final Outcome
+
+Five helpers: serve, setup, visit, screenshot, teardown. Seven verifications: icon appearance, menu interactions, menu routes, shared header/footer, title layout, navigation history, and engagement. main passes one context and executes teardown in finally. Setup is inside the protected scope; server teardown runs even if browser.close fails. The fresh engagement context also closes in finally and now reports its page errors.
+
+#### Implementation Impact
+
+scripts/check-navigation.cjs; regenerated docs/verification/navigation-report.json. Existing screenshot filenames and report object structure retained; final T3 messages are split by verification responsibility. No application behavior changed in this refactor.
+
+#### Verification Required
+
+T0 script syntax/build, browser regression covering retained T1/T2/T3 behavior, and fault-injection checks for partial setup, verification failure, and browser-close failure. See TEST-2026-10-16-001 and TEST-2026-10-16-002.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-10-15-004
+- Tests: TEST-2026-10-16-001; TEST-2026-10-16-002
+- Source: scripts/check-navigation.cjs
+
+#### Next Steps
+
+None.
+
+#### Deferred Decisions
+
+None.
+
+---
+
+---

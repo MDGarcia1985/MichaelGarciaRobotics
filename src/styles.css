@@ -31,9 +31,15 @@ button { font: inherit; }
   z-index: 2;
 }
 
-.site-footer { justify-content: flex-end; }
+.site-footer {
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding: 0 10px 10px;
+}
+.site-copyright { line-height: 1; }
 
-.site-header { min-height: 40px; }
+.site-header { min-height: 40px; justify-content: flex-start; gap: 12px; }
+.site-brand { white-space: nowrap; }
 .site-navigation { position: relative; }
 
 /* Figma frame 1:2 is 250×250. Percentages scale its rectangles to 40×40. */

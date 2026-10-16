@@ -3,7 +3,7 @@
  * Owner: Michael Garcia; contributor: Codex.
  * Contact: michael@mandedesign.studio. License: Pending confirmation.
  * Constraint: Preserve existing hash routes and session-only engagement state.
- * Related decision: DEV-2026-10-15-002.
+ * Related decisions: DEV-2026-10-15-002, DEV-2026-10-15-004.
  */
 import './styles.css';
 import { createNavigationHeader } from './navigation';
@@ -56,12 +56,34 @@ function currentRoute() {
   return route || 'homepage';
 }
 
-/** Purpose: Install shared page navigation. Design: One live disclosure per render.
+/** Purpose: Install shared navigation and name. Design: Global YAML fixes header geometry.
  * Workflow: Called by each page renderer. Data Handoff: Returns header, registers cleanup. */
 function siteHeader() {
   const navigation = createNavigationHeader(website.utility_navigation, color);
+  navigation.header.style.height = `${website.header.height_px}px`;
+  const brand = document.createElement('span');
+  brand.className = 'site-brand';
+  brand.textContent = website.header.brand.value;
+  brand.style.fontSize = `${website.header.brand.font_size_px}px`;
+  brand.style.color = color(website.header.brand.color);
+  navigation.header.append(brand);
   disposeNavigation = navigation.dispose;
   return navigation.header;
+}
+
+/** Purpose: Render the shared copyright footer. Design: Normal flow avoids content overlap.
+ * Workflow: Called for every page. Data Handoff: Returns a YAML-styled footer element. */
+function siteFooter() {
+  const footer = document.createElement('footer');
+  footer.className = 'site-footer';
+  footer.style.height = `${website.footer.height_px}px`;
+  const copyright = document.createElement('small');
+  copyright.className = 'site-copyright';
+  copyright.textContent = website.footer.copyright.value;
+  copyright.style.fontSize = `${website.footer.copyright.font_size_px}px`;
+  copyright.style.color = color(website.footer.copyright.color);
+  footer.append(copyright);
+  return footer;
 }
 
 /** Purpose: Render the landing page. Design: YAML controls content and tokens.
@@ -72,7 +94,6 @@ function renderHomepage(spec: Dict) {
   page.style.background = color(spec.background.color);
 
   const header = siteHeader();
-  header.style.height = `${spec.header.height_px}px`;
 
   const hero = document.createElement('section');
   hero.className = 'hero';
@@ -111,9 +132,7 @@ function renderHomepage(spec: Dict) {
 
   hero.append(title, nav);
 
-  const footer = document.createElement('footer');
-  footer.className = 'site-footer';
-  footer.style.height = `${spec.footer.height_px}px`;
+  const footer = siteFooter();
 
   page.append(header, hero, footer);
   app!.append(page);
@@ -212,7 +231,7 @@ function renderProjectPage(name: string, spec: Dict) {
   });
 
   content.append(title, subtitle, grid);
-  page.append(top, content);
+  page.append(top, content, siteFooter());
   app!.append(page);
   document.title = `${spec.hero.title.value} — ${website.name}`;
 }
@@ -235,7 +254,7 @@ function renderSimplePage(name: string, spec: Dict) {
     content.append(p);
   });
   content.prepend(title);
-  page.append(top, content);
+  page.append(top, content, siteFooter());
   app!.append(page);
   document.title = `${spec.title.value} — ${website.name}`;
 }

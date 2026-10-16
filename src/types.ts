@@ -28,5 +28,13 @@ export interface SiteSpec {
     pages: Dict;
     architecture: Dict;
     utility_navigation: NavigationSpec;
+    header: {
+      height_px: number;
+      brand: { value: string; font_size_px: number; color: string };
+    };
+    footer: {
+      height_px: number;
+      copyright: { value: string; font_size_px: number; color: string };
+    };
   };
 }
