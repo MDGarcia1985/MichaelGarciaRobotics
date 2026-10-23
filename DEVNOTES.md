@@ -330,3 +330,57 @@ None.
 ---
 
 ---
+
+### DEV-2026-10-23-001 — Add discipline and BLOG utility links
+
+**Date:** 2026-10-23  
+**Time:** 09:41 America/New_York  
+**Engineer:** Codex /root  
+**Status:** IMPLEMENTED  
+**Type:** DECISION
+
+#### Problem
+
+The user requested Robotics, Software, Design, and BLOG links in utility_navigation.
+
+#### Context and Constraints
+
+The discipline routes exist; BLOG had no page or loader registration. Keep the existing hash router, shared header/footer, and menu styling.
+
+#### Solutions Considered
+
+Add a nonfunctional BLOG link or register a minimal simple page. Selected a real placeholder destination without implementing the separately proposed blogging platform.
+
+#### Trade-offs
+
+A minimal BLOG page supplies working navigation now; article publishing remains future work. New items follow Home and precede About/Contact.
+
+#### Final Outcome
+
+Menu order is Home, Robotics, Software, Design, BLOG, About, Contact. BLOG routes to #/blog and displays a posts-coming-soon message. Added its YAML specification, global registry entry, and loader import. Extended existing regression checks for all seven destinations and their headings.
+
+#### Implementation Impact
+
+specs/main.yaml; specs/blog.yaml; src/specs.ts; scripts/check-navigation.cjs; regenerated verification artifacts.
+
+#### Verification Required
+
+T0 compilation/bundle and script syntax; T1 menu interactions, T2 each destination, and T3 shared layout and existing regression. See TEST-2026-10-23-001 and TEST-2026-10-23-002.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-10-16-001; DEV-2026-10-15-001
+- Tests: TEST-2026-10-23-001; TEST-2026-10-23-002
+- Source: specs/main.yaml utility_navigation; specs/blog.yaml; src/specs.ts
+
+#### Next Steps
+
+None for this request.
+
+#### Deferred Decisions
+
+Blog article publishing remains part of the earlier architecture proposal.
+
+---
+
+---

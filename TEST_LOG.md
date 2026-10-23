@@ -820,3 +820,115 @@ TEST-2026-10-16-001; TEST-2026-10-15-012.
 #### Disposition
 
 Refactor verified; existing browser coverage retained and cleanup paths exercised.
+
+### TEST-2026-10-23-001 — Expanded utility navigation static validation
+
+**Date:** 2026-10-23  
+**Time:** 09:41 America/New_York  
+**Tester:** Codex /root  
+**Level:** T0  
+**Result:** PASS
+
+#### Scope
+
+Blog registration and expanded menu regression.
+
+#### Files Under Validation
+
+specs/main.yaml; specs/blog.yaml; src/specs.ts; scripts/check-navigation.cjs.
+
+#### Objective
+
+Verify compilation, bundling, and script syntax.
+
+#### Preconditions
+
+Existing dependencies; Windows; Vite 7.3.6.
+
+#### Procedure
+
+Run npm run build and node --check scripts/check-navigation.cjs; await completion.
+
+#### Expected Result
+
+Both commands succeed.
+
+#### Actual Result
+
+TypeScript, Vite, and syntax validation succeeded. Vite transformed 15 modules in 827ms.
+
+#### Evidence
+
+Build generated dist/assets/index-BkR0x38h.js with the blog specification.
+
+#### Failures / Observations
+
+None. Runtime validation follows.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-001.
+
+#### Related Tests
+
+TEST-2026-10-16-001.
+
+#### Disposition
+
+Proceed to browser verification.
+
+### TEST-2026-10-23-002 — Seven-destination navigation regression
+
+**Date:** 2026-10-23  
+**Time:** 09:41 America/New_York  
+**Tester:** Codex /root  
+**Level:** T3  
+**Result:** PASS
+
+#### Scope
+
+T1 expanded dropdown, T2 destination integration, and T3 existing navigation/layout behavior.
+
+#### Files Under Validation
+
+specs/main.yaml; specs/blog.yaml; src/specs.ts; scripts/check-navigation.cjs.
+
+#### Objective
+
+Confirm every utility link reaches its intended page with the shared layout intact.
+
+#### Preconditions
+
+Successful build; installed Chrome and bundled Playwright; permitted local browser/server execution.
+
+#### Procedure
+
+Run node scripts/check-navigation.cjs C:/Users/micha/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright. Follow all seven menu links and assert headings, then exercise existing keyboard, layout, title, history, and engagement checks.
+
+#### Expected Result
+
+Home, Robotics, Software, Design, BLOG, About, and Contact navigate correctly; expanded menu remains keyboard-operable; existing behavior passes.
+
+#### Actual Result
+
+All seven destinations and headings passed. Seven pages retained menu position and copyright at both 1440px and 390px widths. Keyboard interactions, title layout, history/refresh, and session-only engagement passed with no page errors.
+
+#### Evidence
+
+docs/verification/navigation-report.json and updated screenshots; browser regression console output.
+
+#### Failures / Observations
+
+None. BLOG is a placeholder page; article publishing was not introduced.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-001.
+
+#### Related Tests
+
+TEST-2026-10-23-001; TEST-2026-10-16-002.
+
+#### Disposition
+
+Requested menu links verified.

@@ -47,6 +47,14 @@ website:
         items:
             - label: "Home"
               destination: homepage
+            - label: "Robotics"
+              destination: robotics_projects
+            - label: "Software"
+              destination: software_projects
+            - label: "Design"
+              destination: design_projects
+            - label: "BLOG"
+              destination: blog
             - label: "About"
               destination: about
             - label: "Contact"
@@ -79,6 +87,8 @@ website:
             source: "about.yaml"
         contact:
             source: "contact.yaml"
+        blog:
+            source: "blog.yaml"
 
     architecture:
         primary: typescript

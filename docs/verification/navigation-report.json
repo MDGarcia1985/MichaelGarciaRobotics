@@ -2,8 +2,8 @@
   "results": [
     "YAML appearance: {\"background\":\"rgb(18, 10, 7)\",\"bar\":\"rgb(232, 168, 11)\",\"shadow\":\"rgb(86, 22, 29) 0px 2px 6px 0px\"}",
     "T1: 40x40; no hover opening; click toggle; Enter/Space; Tab; ArrowDown; Escape; outside click",
-    "T2: YAML labels/routes integrated; shared dropdown on all six pages; legacy header/footer actions removed",
-    "Shared chrome: all six pages at 1440/390px have menu at (14,20), adjacent centered name, and 10px copyright inset 10px from bottom/left",
+    "T2: all seven menu destinations verified; shared dropdown on all seven pages; legacy header/footer actions removed",
+    "Shared chrome: all seven pages at 1440/390px have menu at (14,20), adjacent centered name, and 10px copyright inset 10px from bottom/left",
     "Title at 1440px viewport: {\"fontSize\":\"150px\",\"lines\":1,\"left\":223.625,\"width\":992.734375}",
     "Title at 1024px viewport: {\"fontSize\":\"150px\",\"lines\":1,\"left\":15.625,\"width\":992.734375}",
     "Title at 390px viewport: {\"fontSize\":\"150px\",\"lines\":1,\"left\":0,\"width\":992.734375}",

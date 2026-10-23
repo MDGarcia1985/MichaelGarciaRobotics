@@ -1,0 +1,8 @@
+blog:
+    background:
+        color: plum
+    title:
+        value: "BLOG"
+        color: burnt_auburn
+    body:
+        - "Lab notes, ideas, and lessons learned. Posts coming soon."

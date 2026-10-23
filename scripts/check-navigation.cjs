@@ -19,9 +19,13 @@ const MIME_TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'te
 const DESKTOP = { width: 1440, height: 900 };
 const HEADER_WIDTHS = [1440, 390];
 const TITLE_WIDTHS = [1440, 1024, 390];
-const ROUTES = ['', 'robotics_projects', 'software_projects', 'design_projects', 'about', 'contact'];
-const MENU_LABELS = ['Home', 'About', 'Contact'];
-const MENU_DESTINATIONS = [['About', 'about'], ['Contact', 'contact'], ['Home', '']];
+const ROUTES = ['', 'robotics_projects', 'software_projects', 'design_projects', 'blog', 'about', 'contact'];
+const MENU_LABELS = ['Home', 'Robotics', 'Software', 'Design', 'BLOG', 'About', 'Contact'];
+const MENU_DESTINATIONS = [
+  ['Robotics', 'robotics_projects'], ['Software', 'software_projects'],
+  ['Design', 'design_projects'], ['BLOG', 'blog'],
+  ['About', 'about'], ['Contact', 'contact'], ['Home', ''],
+];
 const DISCIPLINES = ['Robotics', 'Software', 'Design'];
 const SESSION_KEY = 'mgr-engagement-complete';
 const ENGAGEMENT_TIMEOUT_MS = 10000;
@@ -184,6 +188,7 @@ async function verifyMenuRoutes(context) {
     await trigger.click();
     await dropdown.getByRole('link', { name: label, exact: true }).click();
     await page.waitForURL(`${url}/#/${route}`);
+    assert.equal(await page.locator('h1').textContent(), label === 'Home' ? EXPECTED.name : label);
     assert.equal(await dropdown.isVisible(), false);
     assert.equal(await trigger.count(), 1);
   }
@@ -196,7 +201,7 @@ async function verifyMenuRoutes(context) {
     await page.keyboard.press('Escape');
     assert.equal(await dropdown.isVisible(), false);
   }
-  results.push('T2: YAML labels/routes integrated; shared dropdown on all six pages; legacy header/footer actions removed');
+  results.push('T2: all seven menu destinations verified; shared dropdown on all seven pages; legacy header/footer actions removed');
 }
 
 /* Purpose: Verify consistent header/footer geometry. 
@@ -229,7 +234,7 @@ async function verifySharedHeaderFooter(context) {
       assert.equal(footer.bottomGap, EXPECTED.copyrightInset);
     }
   }
-  results.push('Shared chrome: all six pages at 1440/390px have menu at (14,20), adjacent centered name, and 10px copyright inset 10px from bottom/left');
+  results.push('Shared chrome: all seven pages at 1440/390px have menu at (14,20), adjacent centered name, and 10px copyright inset 10px from bottom/left');
   await visit(context, { route: 'about' });
   await screenshot(context, 'shared-header-about.png');
 }
