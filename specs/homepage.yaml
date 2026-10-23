@@ -53,17 +53,17 @@ homepage:
         once_per_session: true
         title: "Thanks for visiting!"
         prompt: "What Would you like to explore first?"
-        explanation: "Your choice only changes what the page emphasizes. Nothing is submitted or stored beyond this browser session."
+        explanation: "Choose a subject to open its project page. Nothing is submitted or stored beyond this browser session."
         choices:
             robotics:
                 label: "Robotics"
-                target: robotics
+                target: robotics_projects
             software:
                 label: "Software"
-                target: software
+                target: software_projects
             design:
                 label: "Design"
-                target: design
+                target: design_projects
             wander:
                 label: "Just looking"
                 target: none

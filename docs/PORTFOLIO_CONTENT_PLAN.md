@@ -4,6 +4,8 @@ Status: proposed; prepared September 24, 2026. This document plans content and i
 
 October 15 architecture follow-up: [Architecture alignment review](ARCHITECTURE_ALIGNMENT_REVIEW.md) proposes static HTML routes and project Markdown with YAML frontmatter for the requested GitHub/Cloudflare/blog direction. Its routing and content-storage recommendations replace the hash-route and hand-maintained project-catalog proposals below. The editorial selection, evidence criteria, and About layout remain applicable.
 
+October 23 implementation status: [Current architecture](ARCHITECTURE.md) now documents the live source structure. The gap table below records the original planning baseline: Git, engineering journals, source annotations, shared navigation, responsive layout, and browser regression have since been added. BLOG is a placeholder page. The missing-document finding is resolved; project case studies, rich About content, Markdown publishing, and media embeds remain planned. Use the architecture document for current behavior and this plan for editorial selection and evidence requirements.
+
 ## 1. Direction and source of truth
 
 Build toward **3 Robotics, 3 Software, and 2 Design case studies**, with the tracked utility vehicle presented separately as an **in-development preview**. This is eight substantive case studies plus one preview, conditional on collecting adequate evidence. Do not add a third Design project simply to make the grids symmetrical.

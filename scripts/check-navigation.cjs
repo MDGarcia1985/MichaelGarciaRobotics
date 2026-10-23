@@ -2,7 +2,7 @@
  * File: scripts/check-navigation.cjs — browser regression for shared navigation.
  * Owner: Michael Garcia; contributor: Codex. Contact: michael@mandedesign.studio.
  * License: Pending confirmation.
- * Related decisions: DEV-2026-10-15-002, DEV-2026-10-16-001.
+ * Related decisions: DEV-2026-10-16-001, DEV-2026-10-23-002.
  * Run after npm run build; optional argv[2] supplies an installed Playwright module.
  * Uses a temporary localhost server and isolated headless Chrome context.
  */
@@ -17,8 +17,12 @@ const EVIDENCE_DIR = path.resolve(__dirname, '../docs/verification');
 const HOST = '127.0.0.1';
 const MIME_TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
 const DESKTOP = { width: 1440, height: 900 };
-const HEADER_WIDTHS = [1440, 390];
-const TITLE_WIDTHS = [1440, 1024, 390];
+const VIEWPORTS = [
+  { width: 320, height: 568 }, { width: 375, height: 667 },
+  { width: 390, height: 844 }, { width: 430, height: 932 },
+  { width: 667, height: 375 }, { width: 768, height: 1024 },
+  { width: 1024, height: 768 }, DESKTOP,
+];
 const ROUTES = ['', 'robotics_projects', 'software_projects', 'design_projects', 'blog', 'about', 'contact'];
 const MENU_LABELS = ['Home', 'Robotics', 'Software', 'Design', 'BLOG', 'About', 'Contact'];
 const MENU_DESTINATIONS = [
@@ -38,7 +42,6 @@ const EXPECTED = {
     shadow: 'rgb(86, 22, 29) 0px 2px 6px 0px',
   },
   name: 'Michael Garcia',
-  brandGap: 12,
   copyright: '© Michael Garcia',
   copyrightSize: '10px',
   copyrightInset: 10,
@@ -89,8 +92,8 @@ async function setup(context) {
  * Workflow: Verifications pass the shared context and optional navigation settings.
  * Data Handoff: Updates the existing page; its locators remain reusable. 
  */
-async function visit(context, { route = '', width = DESKTOP.width } = {}) {
-  await context.page.setViewportSize({ width, height: DESKTOP.height });
+async function visit(context, { route = '', width = DESKTOP.width, height = DESKTOP.height } = {}) {
+  await context.page.setViewportSize({ width, height });
   await context.page.goto(`${context.url}/#/${route}`);
 }
 
@@ -195,7 +198,7 @@ async function verifyMenuRoutes(context) {
   for (const route of ROUTES) {
     await visit(context, { route });
     assert.equal(await trigger.count(), 1);
-    assert.equal(await page.locator('.site-header > button, .site-footer a, .site-footer button').count(), 0);
+    assert.equal(await page.locator('.site-header > button:not(.site-brand), .site-footer a, .site-footer button').count(), 0);
     await trigger.click();
     assert.deepEqual(await dropdown.locator('a').allTextContents(), MENU_LABELS);
     await page.keyboard.press('Escape');
@@ -211,18 +214,26 @@ async function verifyMenuRoutes(context) {
  */
 async function verifySharedHeaderFooter(context) {
   const { page, trigger, results } = context;
-  for (const width of HEADER_WIDTHS) {
+  for (const viewport of VIEWPORTS) {
+    const { width } = viewport;
+    const desktop = width >= 1100;
+    const inset = desktop ? 14 : Math.min(24, Math.max(16, width * .05));
     for (const route of ROUTES) {
-      await visit(context, { route, width });
+      await visit(context, { route, ...viewport });
       const buttonBox = await trigger.boundingBox();
-      assert.equal(buttonBox.x, EXPECTED.menu.x);
-      assert.equal(buttonBox.y, EXPECTED.menu.y);
-      assert.equal(buttonBox.width, EXPECTED.menu.size);
-      assert.equal(buttonBox.height, EXPECTED.menu.size);
-      assert.equal(await page.locator('.site-brand').textContent(), EXPECTED.name);
-      const brandBox = await page.locator('.site-brand').boundingBox();
-      assert.equal(brandBox.x, buttonBox.x + buttonBox.width + EXPECTED.brandGap);
-      assert.equal(brandBox.y + brandBox.height / 2, buttonBox.y + buttonBox.height / 2);
+      assert.ok(Math.abs(buttonBox.x - inset) < 1);
+      assert.equal(buttonBox.y, desktop ? 20 : 10);
+      assert.equal(buttonBox.width, desktop ? 40 : 44);
+      assert.equal(buttonBox.height, desktop ? 40 : 44);
+      if (route === '') {
+        assert.equal(await page.locator('.site-brand').count(), 0);
+        assert.equal(await page.locator('.site-header').innerText(), '');
+      } else {
+        assert.equal(await page.locator('.site-brand').textContent(), EXPECTED.name);
+        const brandBox = await page.locator('.site-brand').boundingBox();
+        assert.equal(brandBox.x, buttonBox.x + buttonBox.width + 12);
+        assert.equal(brandBox.y + brandBox.height / 2, buttonBox.y + buttonBox.height / 2);
+      }
       assert.equal(await page.locator('.site-copyright').textContent(), EXPECTED.copyright);
       const footer = await page.locator('.site-copyright').evaluate(el => ({
         fontSize: getComputedStyle(el).fontSize,
@@ -230,41 +241,72 @@ async function verifySharedHeaderFooter(context) {
         bottomGap: document.querySelector('.page').getBoundingClientRect().bottom - el.getBoundingClientRect().bottom,
       }));
       assert.equal(footer.fontSize, EXPECTED.copyrightSize);
-      assert.equal(footer.x, EXPECTED.copyrightInset);
-      assert.equal(footer.bottomGap, EXPECTED.copyrightInset);
+      assert.ok(Math.abs(footer.x - (desktop ? 10 : inset)) < 1);
+      assert.equal(footer.bottomGap, desktop ? 10 : 16);
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Overflow: ${route} at ${width}`);
+      if (width < 768) {
+        const heading = await page.locator('h1').boundingBox();
+        assert.ok(Math.abs(heading.x - inset) < 1);
+        assert.equal(await page.locator('h1').evaluate(el => getComputedStyle(el).textAlign), 'left');
+        const cards = await page.locator('.project-card').all();
+        for (let index = 1; index < cards.length; index++) {
+          const previous = await cards[index - 1].boundingBox();
+          const current = await cards[index].boundingBox();
+          assert.equal(current.x, previous.x);
+          assert.ok(current.y >= previous.y + previous.height);
+        }
+      }
+      await trigger.click();
+      for (const link of await context.dropdown.locator('a').all()) {
+        const box = await link.boundingBox();
+        assert.ok(box.width >= 44 && box.height >= 44);
+      }
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      await page.keyboard.press('Escape');
     }
   }
-  results.push('Shared chrome: all seven pages at 1440/390px have menu at (14,20), adjacent centered name, and 10px copyright inset 10px from bottom/left');
+  results.push('All seven routes at 320/375/390/430/667/768/1024/1440: no horizontal overflow, consistent header/footer, 44px mobile targets, left-aligned single-column phones');
   await visit(context, { route: 'about' });
   await screenshot(context, 'shared-header-about.png');
 }
 
-/* Purpose: Verify fixed-size single-line title. 
- * Design: Measure text lines and overflow coverage.
- * Workflow: Loads Home at three widths. 
- * Data Handoff: Adds measurements and narrow screenshot. 
- */
+/* Purpose: Verify responsive identity and retained desktop typography.
+ * Design: Measure actual layout across portrait, landscape, tablet, and desktop.
+ * Workflow: Loads shared Home content at each viewport.
+ * Data Handoff: Adds layout evidence and representative screenshots. */
 async function verifyTitleLayout(context) {
   const { page, trigger, results } = context;
-  for (const width of TITLE_WIDTHS) {
-    await visit(context, { width });
-    const title = await page.locator('h1').evaluate(el => {
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      return { fontSize: getComputedStyle(el).fontSize, lines: range.getClientRects().length,
-        left: el.getBoundingClientRect().left, width: el.getBoundingClientRect().width };
-    });
-    assert.equal(title.fontSize, EXPECTED.titleSize);
-    assert.equal(title.lines, 1);
-    assert.ok(title.left >= 0, 'The beginning of the title must remain reachable');
-    assert.ok(await page.locator('.homepage').evaluate(el =>
-      el.getBoundingClientRect().width >= document.documentElement.scrollWidth - 1),
-      'Page background must extend behind horizontally overflowing title');
-    results.push(`Title at ${width}px viewport: ${JSON.stringify(title)}`);
+  for (const viewport of VIEWPORTS) {
+    await visit(context, viewport);
+    const { width } = viewport;
+    const title = await page.locator('h1').evaluate(el => ({
+      fontSize: getComputedStyle(el).fontSize,
+      left: el.getBoundingClientRect().left,
+    }));
+    if (width >= 1100) assert.equal(title.fontSize, EXPECTED.titleSize);
+    const items = await page.locator('.hero-nav-item').all();
+    const boxes = await Promise.all(items.map(item => item.boundingBox()));
+    assert.deepEqual(await page.locator('.hero-nav-item').allTextContents(), DISCIPLINES);
+    for (let index = 1; index < boxes.length; index++) {
+      if (width < 768) {
+        assert.equal(boxes[index].x, boxes[0].x);
+        assert.ok(boxes[index].y >= boxes[index - 1].y + boxes[index - 1].height);
+        assert.ok(boxes[index].height >= 44);
+      } else assert.equal(boxes[index].y, boxes[0].y);
+    }
+    for (const separator of await page.locator('.separator').all()) {
+      assert.equal(await separator.getAttribute('aria-hidden'), 'true');
+      if (width < 768) assert.equal((await separator.boundingBox()).height, 1);
+    }
+    results.push(`Responsive identity at ${width}x${viewport.height}: ${JSON.stringify(title)}`);
+    if ([320, 390, 1440].includes(width)) await screenshot(context, `responsive-home-${width}.png`);
   }
+  await visit(context, { width: 390, height: 844 });
   await trigger.click();
   await screenshot(context, 'navigation-narrow.png');
   await page.keyboard.press('Escape');
+  await visit(context, { route: 'robotics_projects', width: 390, height: 844 });
+  await screenshot(context, 'responsive-project-390.png');
 }
 
 /* Purpose: Verify discipline navigation and history. 
@@ -274,6 +316,16 @@ async function verifyTitleLayout(context) {
  */
 async function verifyNavigationHistory(context) {
   const { page, trigger, dropdown, results } = context;
+  for (const route of ROUTES.filter(Boolean)) {
+    await visit(context, { route, width: 390 });
+    const brand = page.getByRole('button', { name: EXPECTED.name, exact: true });
+    assert.ok((await brand.boundingBox()).height >= 44);
+    await brand.focus();
+    await page.keyboard.press(route === 'about' ? 'Space' : 'Enter');
+    await page.waitForURL(`${context.url}/#/`);
+    assert.equal(page.url(), `${context.url}/#/`);
+    assert.equal(await page.locator('.site-brand').count(), 0);
+  }
   for (const label of DISCIPLINES) {
     await visit(context);
     await page.getByRole('button', { name: label, exact: true }).click();
@@ -297,20 +349,39 @@ async function verifyNavigationHistory(context) {
  * Data Handoff: Captures page errors/results and closes the fresh context in finally. 
  */
 async function verifyEngagement(context) {
-  const fresh = await context.browser.newContext({ viewport: DESKTOP });
-  try {
-    const home = await fresh.newPage();
-    home.on('pageerror', error => context.errors.push(error.message));
-    await home.goto(context.url);
-    await home.getByRole('dialog').waitFor({ timeout: ENGAGEMENT_TIMEOUT_MS });
-    await home.getByRole('button', { name: 'Just looking', exact: true }).click();
-    assert.equal(await home.getByRole('dialog').count(), 0);
-    await home.reload();
-    await home.waitForTimeout(ENGAGEMENT_RECHECK_MS);
-    assert.equal(await home.getByRole('dialog').count(), 0);
-    context.results.push('T3: current 6-second session-only engagement');
-  } finally {
-    await fresh.close();
+  for (const [label, route, key] of [
+    ['Robotics', 'robotics_projects', 'robotics'],
+    ['Software', 'software_projects', 'software'],
+    ['Design', 'design_projects', 'design'],
+    ['Just looking', '', 'wander'],
+  ]) {
+    const fresh = await context.browser.newContext({ viewport: { width: 320, height: 568 }, isMobile: true, hasTouch: true });
+    try {
+      const home = await fresh.newPage();
+      home.on('pageerror', error => context.errors.push(error.message));
+      await home.goto(`${context.url}/#/`);
+      await home.getByRole('dialog').waitFor({ timeout: ENGAGEMENT_TIMEOUT_MS });
+      assert.ok(await home.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      if (key === 'wander') {
+        await home.screenshot({ path: path.join(EVIDENCE_DIR, 'responsive-engagement-320.png') });
+        await home.setViewportSize({ width: 667, height: 375 });
+      }
+      await home.getByRole('dialog').getByRole('button', { name: label, exact: true }).tap();
+      assert.equal(await home.getByRole('dialog').count(), 0);
+      assert.equal(home.url(), `${context.url}/#/${route}`);
+      assert.equal(await home.locator('h1').textContent(), route ? label : EXPECTED.name);
+      assert.equal(await home.evaluate(key => sessionStorage.getItem(key), SESSION_KEY), key);
+      if (route) {
+        assert.equal(await home.locator(':focus').textContent(), label);
+        await home.getByRole('button', { name: EXPECTED.name, exact: true }).tap();
+      }
+      await home.reload();
+      await home.waitForTimeout(ENGAGEMENT_RECHECK_MS);
+      assert.equal(await home.getByRole('dialog').count(), 0);
+      context.results.push(`Engagement: ${label} -> ${route || 'Home'}, session suppression on return/reload`);
+    } finally {
+      await fresh.close();
+    }
   }
 }
 

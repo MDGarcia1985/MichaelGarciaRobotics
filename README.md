@@ -1,46 +1,64 @@
-# Michael Garcia Robotics — YAML-driven starter
+# Michael Garcia Robotics
 
-This is a small TypeScript/Vite website starter built around the architecture explored in the design discussion:
+A responsive portfolio prototype built with TypeScript, Vite, YAML specifications, and CSS. The browser renders seven hash-routed pages from local YAML. Project case studies and blog publishing are not implemented yet.
 
-- **YAML** describes the website, design tokens, page composition, navigation, and engagement behavior.
-- **TypeScript** parses the YAML, resolves named tokens, renders pages, and executes behavior.
-- **CSS** handles presentation mechanics that are better expressed as styling rather than data.
-- **Markdown** documents the architecture and decisions.
-
-## Run it
+## Run locally
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Then open the local URL Vite prints in the terminal.
-
-For a production check:
+Open the URL printed by Vite. To type-check and build the production bundle, then serve it locally:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## Where to start reading
+The build writes `dist/`. Preview serves that build; rerun the build after source changes. The repository includes a lockfile but does not pin a Node runtime. Recent recorded checks used Node 22.19.0 and npm 11.10.0; see [TEST_LOG.md](TEST_LOG.md) for verification history.
 
-1. `specs/main.yaml` — global design tokens and page registry.
-2. `specs/homepage.yaml` — the homepage composition.
-3. `src/specs.ts` — where YAML files are loaded and parsed.
-4. `src/main.ts` — where named YAML intent becomes browser behavior.
-5. `docs/ARCHITECTURE.md` — why the layers are divided this way.
+## Where to start
 
-## Engagement interaction
+1. [Current architecture](docs/ARCHITECTURE.md) — implemented components, routes, data flow, and limitations.
+2. [Global specification](specs/main.yaml) — palette, desktop typography, menu items, header/footer settings, and page registry.
+3. [Home specification](specs/homepage.yaml) — hero, discipline navigation, and engagement choices.
+4. [Specification loader](src/specs.ts) — explicit YAML imports and page-key mapping.
+5. [Renderer](src/main.ts), [navigation component](src/navigation.ts), and [styles](src/styles.css) — behavior and responsive presentation.
 
-Twelve seconds after a first-time visitor lands on the homepage, a small modal asks **"What do you want to explore first?"** with Robotics, Software, Design, and Just looking.
+## Current behavior
 
-It does **not** collect email, name, analytics, or contact information. The selected answer is only written to `sessionStorage` so the prompt does not repeat during the same browser session. If the visitor chooses one of the three disciplines, that navigation item receives a short visual emphasis and keyboard focus.
+- Routes: Home, Robotics, Software, Design, BLOG, About, and Contact. Home uses `#/`; other routes use keys such as `#/robotics_projects` and `#/blog`.
+- Every page has the shared click-operated navigation menu. Interior pages also show a “Michael Garcia” button that returns Home; Home displays the name only in its hero.
+- Mobile layouts stack Robotics / Software / Design with horizontal rules and use left-aligned, single-column content. Tablet and desktop restore horizontal discipline branding. Desktop retains the configured 150px hero title; smaller screens use CSS `clamp()` sizing.
+- Every page has the 10px copyright footer. The menu is 40px on desktop and at least 44px below the desktop breakpoint.
+- Six seconds after Home renders, an unanswered engagement prompt offers Robotics, Software, Design, or Just looking. Subject choices open the corresponding project page and focus its heading. Just looking dismisses the prompt, stays Home, and focuses the menu button.
+- A completed engagement choice is stored under `mgr-engagement-complete` in `sessionStorage`. It suppresses subsequent prompts in that tab's page session. This interaction sends no form submission or analytics event.
 
-The intent is to cause a small commitment after the visitor has had time to inspect the landing page, without interrupting immediately or turning the site into a lead-capture funnel.
+Subject pages contain placeholder text cards; BLOG, About, and Contact contain placeholder paragraphs. There is no contact form, Markdown article loader, project-detail renderer, image gallery, or video embed pipeline. Shared CSS constrains media dimensions, but does not create a publishing system.
 
-Everything about the interaction — delay, copy, choices, and targets — is defined in `specs/homepage.yaml` so you can experiment without rewriting TypeScript.
+## Verification
 
-## Deliberate placeholders
+The existing browser regression requires a production build, an installed Chrome browser, and an available Playwright module. Playwright is **not** a declared project dependency. If it is available through normal Node resolution:
 
-The project, About, and Contact pages are intentionally sparse. They exist to make the navigation architecture executable without inventing content you have not specified yet.
+```bash
+npm run build
+node --check scripts/check-navigation.cjs
+node scripts/check-navigation.cjs
+```
+
+Alternatively pass the absolute path to an existing Playwright module:
+
+```bash
+node scripts/check-navigation.cjs /absolute/path/to/node_modules/playwright
+```
+
+The script creates a temporary localhost server and isolated headless Chrome contexts, then closes them in `finally`. It checks all seven routes at phone, landscape, tablet, and desktop sizes, plus menu keyboard controls, header Home actions, engagement destinations, and session suppression. It writes screenshots and `navigation-report.json` to [docs/verification](docs/verification). These are current-run artifacts; the append-only [test log](TEST_LOG.md) preserves historical outcomes. Browser checks require local server/process permissions and are not evidence of physical-device or hosted-site verification.
+
+Follow the [test standards](docs/TEST_LOG_STANDARDS.md), [annotation standards](docs/ANNOTATION_STANDARDS.md), and [decision-journal standards](docs/DEVNOTES_STANDARDS.md). Record material decisions in [DEVNOTES.md](DEVNOTES.md) and executed checks in [TEST_LOG.md](TEST_LOG.md).
+
+## Planned publishing architecture
+
+The intended direction is Squarespace registration, GitHub source/content/history/CI, and Cloudflare Pages hosting. Astro static generation, Markdown projects/posts, image/video processing, and optional later Decap CMS remain proposals. No application database or public authentication exists.
+
+Read the dated [architecture migration proposal](docs/ARCHITECTURE_ALIGNMENT_REVIEW.md) and [portfolio content plan](docs/PORTFOLIO_CONTENT_PLAN.md) for future work. They are not descriptions of deployed functionality. The local checkout has Git metadata and an `origin` remote; this documentation review did not verify remote access, CI, DNS, or hosting configuration.

@@ -384,3 +384,110 @@ Blog article publishing remains part of the earlier architecture proposal.
 ---
 
 ---
+### DEV-2026-10-23-002 — Portrait-first responsive presentation
+
+**Date:** 2026-10-23  
+**Time:** 13:03 America/New_York  
+**Engineer:** Codex /root  
+**Status:** IMPLEMENTED  
+**Type:** DECISION
+
+#### Problem
+
+Fixed-size titles and horizontal discipline branding overflow smartphones. The user requests a portrait layout while preserving desktop identity.
+
+#### Context and Constraints
+
+Preserve shared YAML content, palette, fonts, and hash routes. Supersedes the narrow-screen overflow policy in DEV-2026-10-15-002 and related fixed-title checks in DEV-2026-10-15-004.
+
+#### Solutions Considered
+
+Duplicate mobile pages, shrink desktop composition, or reflow shared components with CSS. Selected shared responsive CSS to avoid content drift and additional dependencies.
+
+#### Trade-offs
+
+Mobile titles wrap and the menu grows from 40px to 44px. Phone margins adapt between 16 and 24px. Desktop retains its header/footer insets and typography. Tablet sizes interpolate before desktop sizes resume at 1100px.
+
+#### Final Outcome
+
+Below 768px, discipline buttons form one left-aligned navigation group with decorative rules; cards and dialog choices stack. Clamp typography, safe-area padding, and bounded scrolling support portrait and landscape. Reduced-motion preferences disable emphasis animation. Desktop retains horizontal branding. No content duplication or runtime dependencies added.
+
+#### Implementation Impact
+
+src/styles.css; src/main.ts; index.html; scripts/check-navigation.cjs. Regression script retains five helpers, seven verifications, a context object, and finally teardown.
+
+#### Verification Required
+
+T0 build and syntax. T1 controls, T2 all seven routes across eight viewports, T3 history/session/keyboard regression and visual inspection.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-10-15-002; DEV-2026-10-15-004; DEV-2026-10-16-001
+- Tests: TEST-2026-10-23-003; TEST-2026-10-23-004
+- Source: src/styles.css; src/main.ts; index.html; scripts/check-navigation.cjs
+
+#### Next Steps
+
+None for implementation; record final verification in TEST_LOG.md.
+
+#### Deferred Decisions
+
+Physical iOS/Android safe-area validation requires real devices. Tests use Chrome viewport/touch emulation. Project media content is not added by this change; shared image/video sizing is proportional.
+
+---
+
+---
+
+### DEV-2026-10-23-003 — Header Home action and engagement destinations
+
+**Date:** 2026-10-23
+**Time:** 13:49 America/New_York
+**Engineer:** Codex /root
+**Status:** IMPLEMENTED
+**Type:** DECISION
+
+#### Problem
+
+The user confirmed that interior header branding should return Home and engagement choices should open project pages rather than emphasize navigation items.
+
+#### Context and Constraints
+
+Retain the Home-only omission of header branding, existing visual styling, hash router, and session-only completion state.
+
+#### Solutions Considered
+
+Map old discipline keys to routes in TypeScript or configure actual page targets in YAML. Selected explicit YAML page targets to keep content behavior in the specification. Use a native button for the requested header action.
+
+#### Trade-offs
+
+Header branding now participates in keyboard navigation and has a 44px target. Engagement choices navigate immediately, replacing the previous emphasis animation. Project headings receive focus after navigation; dismissal returns focus to the menu.
+
+#### Final Outcome
+
+Interior header buttons return Home. Robotics, Software, and Design engagement targets are their existing project routes; Just looking dismisses without navigation. Session suppression remains unchanged. Removed unused emphasis CSS and updated explanatory copy and README.
+
+#### Implementation Impact
+
+src/main.ts; src/styles.css; specs/homepage.yaml; README.md; scripts/check-navigation.cjs.
+
+#### Verification Required
+
+T0 build/script syntax; T1 header and modal actions; T2 all target routes and focus transfer; T3 responsive/navigation/session regression.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-10-23-002
+- Tests: Pending
+- Source: src/main.ts siteHeader and scheduleEngagement; specs/homepage.yaml engagement
+
+#### Next Steps
+
+Complete browser regression and record results in TEST_LOG.md.
+
+#### Deferred Decisions
+
+None.
+
+---
+
+---

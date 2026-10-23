@@ -1,7 +1,7 @@
 /* File: src/styles.css — page layout and interaction presentation.
  * Owner: Michael Garcia; contributor: Codex. Contact: michael@mandedesign.studio.
- * License: Pending confirmation. Related decision: DEV-2026-10-15-002.
- * Keep the configured hero font size; narrow views may scroll horizontally.
+ * License: Pending confirmation. Related decision: DEV-2026-10-23-002.
+ * Shared content reflows for phones; YAML sizes remain the desktop baseline.
  */
 :root {
   color-scheme: dark;
@@ -39,7 +39,17 @@ button { font: inherit; }
 .site-copyright { line-height: 1; }
 
 .site-header { min-height: 40px; justify-content: flex-start; gap: 12px; }
-.site-brand { white-space: nowrap; }
+.site-brand {
+  white-space: nowrap;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.site-brand:hover { text-decoration: underline; }
+.site-brand:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .site-navigation { position: relative; }
 
 /* Figma frame 1:2 is 250×250. Percentages scale its rectangles to 40×40. */
@@ -99,8 +109,8 @@ button { font: inherit; }
   text-align: center;
 }
 
-/* Keep the page background behind the full fixed-size title on narrow screens. */
-.homepage { min-width: max-content; }
+/* Responsive sizing prevents overflow instead of hiding unreachable content. */
+.homepage { min-width: 0; }
 
 .hero h1 { margin: 0; line-height: 1; white-space: nowrap; }
 
@@ -121,7 +131,8 @@ button { font: inherit; }
 .hero-nav-item:hover,
 .hero-nav-item:focus-visible {
   transform: scale(var(--nav-hover-scale, 1.08));
-  outline: none;
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
 .separator { opacity: .75; }
@@ -160,14 +171,6 @@ button { font: inherit; }
 .engagement-choices button:hover,
 .engagement-choices button:focus-visible { background: rgba(232, 168, 11, .10); outline: none; }
 
-.engagement-emphasis {
-  animation: emphasize 1.8s ease;
-}
-@keyframes emphasize {
-  0%, 100% { transform: scale(1); text-shadow: none; }
-  40% { transform: scale(1.18); text-shadow: 0 0 18px rgba(232,168,11,.7); }
-}
-
 .project-content,
 .simple-content {
   width: min(980px, 90vw);
@@ -185,8 +188,111 @@ button { font: inherit; }
 .simple-content { max-width: 760px; }
 .simple-content p { line-height: 1.7; color: rgba(232,168,11,.84); }
 
-@media (max-width: 650px) {
-  .hero { padding-top: 20vh; }
-  .hero-nav { font-size: 22px !important; gap: 2px; }
-  .engagement-choices { grid-template-columns: 1fr; }
+
+/* Mobile-first sizing layer: shared markup, with desktop composition restored below. */
+.page {
+  --gutter: clamp(1rem, 5vw, 1.5rem);
+  --inset-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+  --inset-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  min-height: 100svh;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.site-header {
+  height: calc(64px + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) var(--inset-right) 0 var(--inset-left);
+}
+.site-footer {
+  height: 64px;
+  padding: 0 var(--inset-right) max(16px, env(safe-area-inset-bottom, 0px)) var(--inset-left);
+}
+.navigation-trigger { min-width: 44px; min-height: 44px; }
+.navigation-dropdown {
+  width: min(260px, calc(100vw - var(--inset-left) - var(--inset-right)));
+  max-height: calc(100dvh - 80px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  text-align: left;
+}
+.navigation-dropdown a { min-height: 44px; }
+.hero, .project-content, .simple-content {
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: clamp(24px, 5svh, 48px) var(--inset-right) 32px var(--inset-left);
+  justify-self: stretch;
+  text-align: left;
+}
+.hero h1, .project-content h1 {
+  --responsive-font-size: clamp(3rem, 14vw, 4rem);
+  white-space: normal;
+  line-height: 1.05;
+}
+.hero-nav {
+  --responsive-font-size: clamp(1.75rem, 8vw, 2.5rem);
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  max-width: 24rem;
+  margin-top: clamp(24px, 6vw, 40px);
+  white-space: normal;
+}
+.hero-nav-item {
+  min-width: 44px;
+  min-height: 44px;
+  padding: clamp(12px, 3vw, 18px) 0;
+  text-align: left;
+  line-height: 1.2;
+  transform-origin: left center;
+}
+.hero-nav-item:hover, .hero-nav-item:focus-visible { transform: none; }
+.hero-nav-item:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.separator { height: 1px; font-size: 0; background: currentColor; }
+.project-subtitle { font-size: clamp(1rem, 4vw, 1.25rem); line-height: 1.6; }
+.project-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 24px; }
+.project-card { min-width: 0; min-height: 0; padding: clamp(16px, 4vw, 20px); }
+.project-card h2 { font-size: clamp(1.25rem, 5vw, 1.5rem); line-height: 1.25; }
+.project-card p { line-height: 1.6; }
+.simple-content h1 { font-size: clamp(2rem, 8vw, 3rem); line-height: 1.15; }
+img, video, iframe { max-width: 100%; }
+img, video { height: auto; }
+/* Landscape menus/dialogs scroll internally when their content exceeds available height. */
+.engagement-overlay {
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.engagement-panel { max-height: 100%; overflow-y: auto; padding: clamp(16px, 4vw, 28px); text-align: left; }
+.engagement-panel h2 { font-size: clamp(1.5rem, 6vw, 1.75rem); }
+.engagement-choices { grid-template-columns: minmax(0, 1fr); }
+.engagement-choices button { min-height: 44px; text-align: left; }
+.engagement-choices button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+@media (min-width: 768px) {
+  .hero { text-align: center; padding-top: min(16vh, 144px); }
+  .hero h1, .project-content h1 { --responsive-font-size: clamp(4rem, 10vw, var(--specified-font-size)); }
+  .hero-nav { --responsive-font-size: var(--specified-font-size); flex-direction: row; justify-content: center; align-items: center; max-width: none; gap: 6px; margin-top: 6px; }
+  .hero-nav-item { padding: var(--item-padding); text-align: center; transform-origin: center; }
+  .separator { height: auto; font-size: inherit; background: none; }
+  .project-content, .simple-content { width: min(980px, 90vw); margin: 0 auto; padding: min(12vh, 108px) 0 80px; }
+  .simple-content { max-width: 760px; }
+  .project-grid { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-top: 42px; }
+  .project-card { min-height: 180px; }
+  .simple-content h1 { font-size: 2em; }
+  .engagement-panel { text-align: center; }
+  .engagement-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .engagement-choices button { text-align: center; }
+}
+@media (min-width: 1100px) {
+  .site-header { height: var(--header-height); padding: 0 14px; }
+  .site-footer { height: var(--footer-height); padding: 0 10px 10px; }
+  .navigation-trigger { min-width: 0; min-height: 0; }
+  .navigation-dropdown { width: auto; }
+  .hero { justify-self: center; width: max-content; min-width: min(92vw, 900px); padding: 24vh 0 0; }
+  .hero h1, .project-content h1 { --responsive-font-size: var(--specified-font-size); }
+  .hero h1 { white-space: nowrap; line-height: 1; }
+  .hero-nav-item { min-height: 0; }
+  .hero-nav-item:hover, .hero-nav-item:focus-visible { transform: scale(var(--nav-hover-scale, 1.08)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-nav-item { transition: none; }
 }

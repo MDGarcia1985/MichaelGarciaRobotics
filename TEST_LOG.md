@@ -932,3 +932,395 @@ TEST-2026-10-23-001; TEST-2026-10-16-002.
 #### Disposition
 
 Requested menu links verified.
+
+### TEST-2026-10-23-003 — Responsive source validation
+
+**Date:** 2026-10-23
+**Time:** 13:05 America/New_York
+**Tester:** Codex /root
+**Level:** T0
+**Result:** PASS
+
+#### Scope
+
+Responsive presentation and typography integration.
+
+#### Files Under Validation
+
+src/styles.css; src/main.ts; index.html; scripts/check-navigation.cjs.
+
+#### Objective
+
+Verify the requested mobile reflow while preserving desktop appearance and navigation behavior.
+
+#### Preconditions
+
+Installed project dependencies, Chrome, and bundled Playwright. Browser suite uses a production build and isolated temporary localhost server.
+
+#### Procedure
+
+Run npm run build and node --check scripts/check-navigation.cjs; inspect source diff and git diff --check.
+
+#### Expected Result
+
+Validation completes successfully; responsive layout fits tested viewports and existing navigation remains operational.
+
+#### Actual Result
+
+TypeScript compilation, Vite production build, and script syntax passed. Diff check identified only intentional Markdown hard-break spaces in the appended DEV entry.
+
+#### Evidence
+
+Production build output: 15 modules transformed; CSS 8.09 kB, JavaScript 59.74 kB.
+
+#### Failures / Observations
+
+Python timestamp helper initially lacked tzdata; no file was written. Used Windows time-zone conversion instead. Git also reported normal LF/CRLF conversion notices.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-002.
+
+#### Related Tests
+
+TEST-2026-10-23-002.
+
+#### Disposition
+
+Proceed to runtime verification.
+
+### TEST-2026-10-23-004 — Portrait and desktop browser regression
+
+**Date:** 2026-10-23
+**Time:** 13:05 America/New_York
+**Tester:** Codex /root
+**Level:** T3
+**Result:** PASS
+
+#### Scope
+
+T1 controls, T2 route/layout integration, T3 navigation and session regression.
+
+#### Files Under Validation
+
+src/styles.css; src/main.ts; index.html; scripts/check-navigation.cjs.
+
+#### Objective
+
+Verify the requested mobile reflow while preserving desktop appearance and navigation behavior.
+
+#### Preconditions
+
+Installed project dependencies, Chrome, and bundled Playwright. Browser suite uses a production build and isolated temporary localhost server.
+
+#### Procedure
+
+Run node scripts/check-navigation.cjs C:/Users/micha/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright after the final build. Inspect generated screenshots.
+
+#### Expected Result
+
+Validation completes successfully; responsive layout fits tested viewports and existing navigation remains operational.
+
+#### Actual Result
+
+Passed all seven routes at 320x568, 375x667, 390x844, 430x932, 667x375, 768x1024, 1024x768, and 1440x900. No horizontal overflow. Phone titles align with shared gutters; cards stack; discipline rules are 1px. Menu targets are 44px on mobile, 40px desktop; link targets are at least 44px. Desktop title remains 150px. Keyboard, routes, history, refresh, and session suppression passed with no page errors. Touch-emulated welcome prompt dismissed in landscape. Reviewed mobile home, project, menu, welcome prompt, and desktop screenshots.
+
+#### Evidence
+
+docs/verification/navigation-report.json; responsive-home-320.png; responsive-home-390.png; responsive-home-1440.png; responsive-project-390.png; responsive-engagement-320.png; navigation-narrow.png.
+
+#### Failures / Observations
+
+Chrome viewport/touch emulation, not physical iOS/Android verification. No project media exists to exercise real image/video assets; proportional sizing rules were inspected.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-002.
+
+#### Related Tests
+
+TEST-2026-10-23-002; TEST-2026-10-23-003.
+
+#### Disposition
+
+Implementation verified; physical-device safe-area review remains an optional follow-up.
+
+### TEST-2026-10-23-005 â€” Home-only header name removal
+
+**Date:** 2026-10-23
+**Time:** 13:13 America/New_York
+**Tester:** Codex /root
+**Level:** T3
+**Result:** PASS
+
+#### Scope
+
+Home-only header branding adjustment, including T0 compilation and existing responsive/navigation regression.
+
+#### Files Under Validation
+
+src/main.ts; scripts/check-navigation.cjs.
+
+#### Objective
+
+Omit the header name on Home while preserving it on all six interior pages, as clarified by the user.
+
+#### Preconditions
+
+Installed dependencies, Chrome, and bundled Playwright; final production build available.
+
+#### Procedure
+
+Run node --check scripts/check-navigation.cjs, npm run build, and node scripts/check-navigation.cjs C:/Users/micha/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright.
+
+#### Expected Result
+
+Home header contains only the menu; all other pages retain their adjacent name. Hero name, copyright, responsive layouts, and navigation remain functional.
+
+#### Actual Result
+
+Build and syntax passed. All seven routes passed at all eight existing viewports. Home has no header branding element; interior branding text and position passed. Menu, hero, copyright, keyboard/history, and session checks passed with no page errors.
+
+#### Evidence
+
+docs/verification/navigation-report.json and refreshed navigation/responsive screenshots; successful build and browser command output.
+
+#### Failures / Observations
+
+None. Initial all-page removal was narrowed to Home following user clarification before final verification.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-002.
+
+#### Related Tests
+
+TEST-2026-10-23-004.
+
+#### Disposition
+
+Home-only change verified.
+
+### TEST-2026-10-23-006 — Header navigation initial regression
+
+**Date:** 2026-10-23
+**Time:** 13:50 America/New_York
+**Tester:** Codex /root
+**Level:** T3
+**Result:** FAIL
+
+#### Scope
+
+Header Home actions and engagement routes.
+
+#### Files Under Validation
+
+src/main.ts; src/styles.css; specs/homepage.yaml; scripts/check-navigation.cjs.
+
+#### Objective
+
+Verify confirmed header and engagement navigation changes.
+
+#### Preconditions
+
+Successful production build and script syntax check; Chrome/Playwright installed.
+
+#### Procedure
+
+Run npm run build, node --check scripts/check-navigation.cjs, then the browser regression with bundled Playwright.
+
+#### Expected Result
+
+Header name returns Home on every interior page; engagement choices reach configured pages.
+
+#### Actual Result
+
+Build and syntax passed. Layout/menu checks passed. Immediate URL assertion after Space activation on About observed the old route. Engagement verification was not reached.
+
+#### Evidence
+
+Browser assertion at verifyNavigationHistory: expected /#/, actual /#/about.
+
+#### Failures / Observations
+
+The new keyboard test read the URL immediately after key release. Add the same explicit navigation wait used by existing link tests, then rerun to determine whether activation completes.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-003.
+
+#### Related Tests
+
+TEST-2026-10-23-005.
+
+#### Disposition
+
+Block progression pending corrected test and successful rerun.
+
+### TEST-2026-10-23-007 â€” Header and engagement destination regression
+
+**Date:** 2026-10-23
+**Time:** 13:53 America/New_York
+**Tester:** Codex /root
+**Level:** T3
+**Result:** PASS
+
+#### Scope
+
+T1 header/button controls, T2 YAML engagement routing and focus, T3 responsive navigation and session behavior.
+
+#### Files Under Validation
+
+src/main.ts; src/styles.css; specs/homepage.yaml; scripts/check-navigation.cjs; README.md.
+
+#### Objective
+
+Verify interior header Home buttons and direct engagement page navigation without repeat prompts in the same session.
+
+#### Preconditions
+
+Production build from TEST-2026-10-23-006; Chrome and bundled Playwright installed. Keyboard assertion now waits for navigation.
+
+#### Procedure
+
+Run node --check scripts/check-navigation.cjs and node scripts/check-navigation.cjs C:/Users/micha/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright. Inspect header screenshot and source diff for stale emphasis references.
+
+#### Expected Result
+
+Every interior header button opens Home; three engagement subjects open their pages; Just looking stays Home; returning/reloading does not reopen the prompt.
+
+#### Actual Result
+
+All six interior header buttons passed keyboard activation, including Space on About. Touch-emulated choices reached Robotics, Software, and Design with heading focus and correct session values. Just looking stayed Home. All four choices suppressed the prompt after return/reload. Existing responsive checks across eight viewports, menu keyboard controls, routes/history, and copyright passed without page errors. Header screenshot retains established appearance.
+
+#### Evidence
+
+docs/verification/navigation-report.json; docs/verification/shared-header-about.png; docs/verification/responsive-engagement-320.png. Syntax and source whitespace checks passed.
+
+#### Failures / Observations
+
+Explicitly waiting for the route resolved the initial keyboard-test timing failure. Physical-device testing was not performed.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-003.
+
+#### Related Tests
+
+TEST-2026-10-23-006; TEST-2026-10-23-005.
+
+#### Disposition
+
+Confirmed changes verified; no remaining implementation work.
+
+### TEST-2026-10-23-008 â€” Architecture documentation validation
+
+**Date:** 2026-10-23
+**Time:** 13:59 America/New_York
+**Tester:** Codex /root
+**Level:** T0
+**Result:** FAIL
+
+#### Scope
+
+Documentation consistency and local references only.
+
+#### Files Under Validation
+
+README.md; docs/ARCHITECTURE.md; docs/ARCHITECTURE_ALIGNMENT_REVIEW.md; docs/PORTFOLIO_CONTENT_PLAN.md.
+
+#### Objective
+
+Describe the implemented architecture accurately and distinguish it from migration proposals.
+
+#### Preconditions
+
+Local source, specifications, package manifest, and repository inventory available.
+
+#### Procedure
+
+Compare documentation against src/, specs/, package.json, tsconfig.json, and scripts/check-navigation.cjs. Run an ad hoc Python UTF-8/local-link scan and repository existence assertions. Run git diff --check on documentation changes.
+
+#### Expected Result
+
+Current documentation matches local implementation, resolves local references, and marks proposals and unverified external setup explicitly.
+
+#### Actual Result
+
+The initial local-link scan flagged relative-path in the migration review, an illustrative inline Markdown image example rather than a document link.
+
+#### Evidence
+
+Local inspection and Python scan output; git diff --check output. Successful scan reports four documents and 44 resolved local prose links/anchors.
+
+#### Failures / Observations
+
+The ad hoc scanner excluded fenced code but not inline code. Documentation writing also initially encountered Windows default text encoding; all four final documents were normalized/read explicitly as UTF-8.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-001; DEV-2026-10-23-002; DEV-2026-10-23-003.
+
+#### Related Tests
+
+TEST-2026-10-23-007.
+
+#### Disposition
+
+Correct the scanner to exclude inline code and repeat static validation.
+
+### TEST-2026-10-23-009 â€” Architecture documentation validation
+
+**Date:** 2026-10-23
+**Time:** 13:59 America/New_York
+**Tester:** Codex /root
+**Level:** T0
+**Result:** PASS
+
+#### Scope
+
+Documentation consistency and local references only.
+
+#### Files Under Validation
+
+README.md; docs/ARCHITECTURE.md; docs/ARCHITECTURE_ALIGNMENT_REVIEW.md; docs/PORTFOLIO_CONTENT_PLAN.md.
+
+#### Objective
+
+Describe the implemented architecture accurately and distinguish it from migration proposals.
+
+#### Preconditions
+
+Local source, specifications, package manifest, and repository inventory available.
+
+#### Procedure
+
+Compare documentation against src/, specs/, package.json, tsconfig.json, and scripts/check-navigation.cjs. Run an ad hoc Python UTF-8/local-link scan and repository existence assertions. Run git diff --check on documentation changes.
+
+#### Expected Result
+
+Current documentation matches local implementation, resolves local references, and marks proposals and unverified external setup explicitly.
+
+#### Actual Result
+
+All four documents decode as UTF-8; 44 local prose links and applicable anchors resolve. Repository inventory matches documented absence of content/ and CI workflows and presence of Git metadata. Documentation whitespace checks passed.
+
+#### Evidence
+
+Local inspection and Python scan output; git diff --check output. Successful scan reports four documents and 44 resolved local prose links/anchors.
+
+#### Failures / Observations
+
+Reviewed routes, raw YAML imports, menu/header behavior, engagement target/session/focus handling, CSS breakpoints, package scripts, and browser-test prerequisites against source. No runtime changes; no build/browser rerun needed. External service status and historical platform guidance were not revalidated.
+
+#### Related DEVNOTES
+
+DEV-2026-10-23-001; DEV-2026-10-23-002; DEV-2026-10-23-003.
+
+#### Related Tests
+
+TEST-2026-10-23-008; TEST-2026-10-23-007.
+
+#### Disposition
+
+Current documentation aligned with inspected implementation; historical plans and append-only engineering records retained.

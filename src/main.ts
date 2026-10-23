@@ -3,7 +3,7 @@
  * Owner: Michael Garcia; contributor: Codex.
  * Contact: michael@mandedesign.studio. License: Pending confirmation.
  * Constraint: Preserve existing hash routes and session-only engagement state.
- * Related decisions: DEV-2026-10-15-002, DEV-2026-10-15-004.
+ * Related decisions: DEV-2026-10-23-002, DEV-2026-10-23-003.
  */
 import './styles.css';
 import { createNavigationHeader } from './navigation';
@@ -31,12 +31,13 @@ function color(name: string) {
   return token('colors', name);
 }
 
-/** Purpose: Apply named typography. Design: Keep sizes and font choices in YAML.
+/** Purpose: Apply named typography. Design: YAML supplies desktop sizes; CSS adapts smaller viewports.
  * Workflow: Called during rendering. Data Handoff: Mutates element styles. */
 function applyTypography(element: HTMLElement, styleName: string) {
   const style = token('typography', styleName);
   element.style.fontFamily = style.font_family;
-  element.style.fontSize = `${style.font_size_px}px`;
+  element.style.setProperty('--specified-font-size', `${style.font_size_px}px`);
+  element.style.fontSize = 'var(--responsive-font-size, var(--specified-font-size))';
   element.style.fontWeight = String(style.font_weight ?? 400);
   element.style.fontStyle = style.italic ? 'italic' : 'normal';
 }
@@ -56,17 +57,22 @@ function currentRoute() {
   return route || 'homepage';
 }
 
-/** Purpose: Install shared navigation and name. Design: Global YAML fixes header geometry.
+/** Purpose: Install shared navigation. Design: YAML supplies desktop geometry; CSS adapts mobile spacing.
  * Workflow: Called by each page renderer. Data Handoff: Returns header, registers cleanup. */
-function siteHeader() {
+function siteHeader(showBrand = true) {
   const navigation = createNavigationHeader(website.utility_navigation, color);
-  navigation.header.style.height = `${website.header.height_px}px`;
-  const brand = document.createElement('span');
-  brand.className = 'site-brand';
-  brand.textContent = website.header.brand.value;
-  brand.style.fontSize = `${website.header.brand.font_size_px}px`;
-  brand.style.color = color(website.header.brand.color);
-  navigation.header.append(brand);
+  navigation.header.style.setProperty('--header-height', `${website.header.height_px}px`);
+  // Home already displays the name in its hero; interior pages retain header branding.
+  if (showBrand) {
+    const brand = document.createElement('button');
+    brand.type = 'button';
+    brand.addEventListener('click', () => navigate('homepage'));
+    brand.className = 'site-brand';
+    brand.textContent = website.header.brand.value;
+    brand.style.fontSize = `${website.header.brand.font_size_px}px`;
+    brand.style.color = color(website.header.brand.color);
+    navigation.header.append(brand);
+  }
   disposeNavigation = navigation.dispose;
   return navigation.header;
 }
@@ -76,7 +82,7 @@ function siteHeader() {
 function siteFooter() {
   const footer = document.createElement('footer');
   footer.className = 'site-footer';
-  footer.style.height = `${website.footer.height_px}px`;
+  footer.style.setProperty('--footer-height', `${website.footer.height_px}px`);
   const copyright = document.createElement('small');
   copyright.className = 'site-copyright';
   copyright.textContent = website.footer.copyright.value;
@@ -93,7 +99,7 @@ function renderHomepage(spec: Dict) {
   page.className = 'page homepage';
   page.style.background = color(spec.background.color);
 
-  const header = siteHeader();
+  const header = siteHeader(false);
 
   const hero = document.createElement('section');
   hero.className = 'hero';
@@ -105,6 +111,7 @@ function renderHomepage(spec: Dict) {
 
   const nav = document.createElement('nav');
   nav.className = 'hero-nav';
+  nav.setAttribute('aria-label', 'Explore disciplines');
   applyTypography(nav, spec.navigation.style);
   nav.style.color = color(spec.navigation.color);
 
@@ -114,13 +121,14 @@ function renderHomepage(spec: Dict) {
     navItem.className = 'hero-nav-item';
     navItem.dataset.navKey = key;
     navItem.textContent = item.value;
-    navItem.style.padding = `${spec.navigation.clickable_area.padding_px}px`;
+    navItem.style.setProperty('--item-padding', `${spec.navigation.clickable_area.padding_px}px`);
     navItem.addEventListener('click', () => navigate(item.destination));
     nav.append(navItem);
 
     if (index < items.length - 1) {
       const separator = document.createElement('span');
       separator.className = 'separator';
+      separator.setAttribute('aria-hidden', 'true');
       separator.textContent = spec.navigation.separator.value;
       nav.append(separator);
     }
@@ -137,12 +145,12 @@ function renderHomepage(spec: Dict) {
   page.append(header, hero, footer);
   app!.append(page);
 
-  scheduleEngagement(spec.engagement, nav);
+  scheduleEngagement(spec.engagement);
 }
 
 /** Purpose: Offer a session-scoped discipline choice. Design: Read existing YAML timing.
- * Workflow: Scheduled from Home. Data Handoff: Updates sessionStorage and nav focus. */
-function scheduleEngagement(spec: Dict, nav: HTMLElement) {
+ * Workflow: Scheduled from Home. Data Handoff: Updates sessionStorage and navigates to the selected page. */
+function scheduleEngagement(spec: Dict) {
   if (!spec?.enabled) return;
   const storageKey = 'mgr-engagement-complete';
   if (spec.once_per_session && sessionStorage.getItem(storageKey)) return;
@@ -183,10 +191,13 @@ function scheduleEngagement(spec: Dict, nav: HTMLElement) {
         sessionStorage.setItem(storageKey, choiceKey);
         overlay.remove();
         if (choice.target && choice.target !== 'none') {
-          const target = nav.querySelector<HTMLElement>(`[data-nav-key="${choice.target}"]`);
-          target?.classList.add('engagement-emphasis');
-          target?.focus();
-          window.setTimeout(() => target?.classList.remove('engagement-emphasis'), 1800);
+          navigate(choice.target);
+          // Place keyboard focus in the new page after replacing the dialog.
+          const heading = app!.querySelector<HTMLElement>('h1');
+          heading?.setAttribute('tabindex', '-1');
+          heading?.focus();
+        } else {
+          app!.querySelector<HTMLButtonElement>('.navigation-trigger')?.focus();
         }
       });
       choices.append(el);

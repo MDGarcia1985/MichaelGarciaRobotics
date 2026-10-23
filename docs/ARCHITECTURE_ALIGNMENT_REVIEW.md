@@ -2,6 +2,14 @@
 
 Reviewed: October 15, 2026. Scope: local code inspection, production build, and current official platform documentation. This is an assessment and proposed implementation plan, not an implemented migration or deployment.
 
+## October 23, 2026 implementation status
+
+For the implemented system, use [Current architecture](ARCHITECTURE.md). The review and tables below are the **October 15 baseline and migration proposal**, not a current inventory. External platform guidance below was researched on that review date and has not been revalidated by this documentation update.
+
+Since that baseline, the checkout has gained Git metadata, an `origin` remote, ignore rules, shared navigation, a BLOG placeholder, source annotations, and browser regression coverage. The loader now imports eight YAML files: one global and seven page specs. Menu links are native hash anchors; hero/header/engagement actions still use the client router. Mobile presentation is responsive, and engagement choices now open project pages. The formerly missing architecture document now exists.
+
+Astro, Markdown publishing, project detail pages, media processing/embeds, CI workflows, and hosting/domain setup remain unimplemented or externally unverified. CSS media sizing alone does not fulfill the proposed media pipeline. The repository foundation step below is partly complete; inspect existing history and remote configuration before any further repository setup. Do not reinitialize this checkout based on the historical findings.
+
 ## Assessment
 
 The proposed stack fits this portfolio well. The current TypeScript/Vite starter provides a useful design and navigation prototype, but does not yet provide a publishing system. Retain its YAML specifications, TypeScript behavior, colors, and CSS foundations. Add build-time content processing and generate an HTML page for each project and blog post.
