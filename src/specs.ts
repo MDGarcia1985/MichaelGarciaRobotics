@@ -1,7 +1,7 @@
 /**
  * File: src/specs.ts — load YAML specifications for the existing page renderer.
  * Owner: Michael Garcia; contributor: Codex. Contact: michael@mandedesign.studio.
- * License: Pending confirmation. Related decision: DEV-2026-10-23-001.
+ * License: Proprietary; see LICENSE at the repository root. Related decision: DEV-2026-10-23-001.
  * Constraint: Page keys match the hash router and global page registry.
  */
 import yaml from 'js-yaml';

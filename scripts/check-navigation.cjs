@@ -1,7 +1,7 @@
 /*
  * File: scripts/check-navigation.cjs — browser regression for shared navigation.
  * Owner: Michael Garcia; contributor: Codex. Contact: michael@mandedesign.studio.
- * License: Pending confirmation.
+ * License: Proprietary; see LICENSE at the repository root.
  * Related decisions: DEV-2026-10-16-001, DEV-2026-10-23-002.
  * Run after npm run build; optional argv[2] supplies an installed Playwright module.
  * Uses a temporary localhost server and isolated headless Chrome context.

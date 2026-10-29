@@ -1,7 +1,7 @@
 /**
  * File: src/types.ts — shared YAML specification contracts.
  * Owner: Michael Garcia; contributor: Codex.
- * Contact: michael@mandedesign.studio. License: Pending confirmation.
+ * Contact: michael@mandedesign.studio. License: Proprietary; see LICENSE at the repository root.
  * Related decision: DEV-2026-10-15-002.
  */
 export type Dict = Record<string, any>;

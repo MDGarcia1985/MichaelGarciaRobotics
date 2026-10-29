@@ -1324,3 +1324,170 @@ TEST-2026-10-23-008; TEST-2026-10-23-007.
 #### Disposition
 
 Current documentation aligned with inspected implementation; historical plans and append-only engineering records retained.
+
+### TEST-2026-10-29-001 — Proprietary license consistency and static verification
+
+**Date:** 2026-10-29
+**Time:** 10:42 America/New_York
+**Tester:** Codex /root
+**Level:** T0
+**Result:** PASS
+
+#### Scope
+
+License documentation, package metadata, and source-header consistency.
+
+#### Files Under Validation
+
+LICENSE; README.md; package.json; package-lock.json; index.html; src/main.ts; src/navigation.ts; src/specs.ts; src/styles.css; src/types.ts; scripts/check-navigation.cjs; DEVNOTES.md.
+
+#### Objective
+
+Provide explicit proprietary terms, preserve third-party terms and lawful uses, and resolve pending source-license annotations without changing runtime behavior.
+
+#### Preconditions
+
+Existing dependencies installed; clean working tree before this task.
+
+#### Procedure
+
+Inspect license scope and exceptions. Parse both package JSON files with Node and assert matching UNLICENSED values and root LICENSE existence. Inspect git diff and scan active headers for pending license text. Run npm.cmd run build, node --check scripts/check-navigation.cjs, and git diff --check.
+
+#### Expected Result
+
+License and package metadata agree; active headers reference the root license; static checks pass.
+
+#### Actual Result
+
+Root license and package metadata assertions passed. Build compiled TypeScript and bundled 15 modules successfully. Navigation script syntax and whitespace checks passed. Active source headers no longer contain pending license metadata.
+
+#### Evidence
+
+Terminal output: License file and package metadata checks passed; Vite build completed successfully. Syntax and whitespace checks exit successfully.
+
+#### Failures / Observations
+
+Comment and metadata changes only; browser regression was not required. Validation establishes repository consistency and buildability, not legal enforceability.
+
+#### Related DEVNOTES
+
+DEV-2026-10-29-001.
+
+#### Related Tests
+
+None.
+
+#### Disposition
+
+Complete.
+### TEST-2026-10-29-002 — Initial license audit assertions
+
+**Date:** 2026-10-29
+**Time:** 10:48 America/New_York
+**Tester:** Codex /root
+**Level:** T0
+**Result:** FAIL
+
+#### Scope
+
+Static licensing audit and journal preservation assertion.
+
+#### Files Under Validation
+
+Eight authored source files; license guidance; package metadata; DEVNOTES.md; TEST_LOG.md.
+
+#### Objective
+
+Verify consistent license references and preserved historical records.
+
+#### Preconditions
+
+Git HEAD and working tree available.
+
+#### Procedure
+
+Use Node assertions for source headers, documentation links, package metadata, unchanged third-party lock entries, and a raw string prefix comparison of journals against git show HEAD.
+
+#### Expected Result
+
+All assertions pass.
+
+#### Actual Result
+
+Header, documentation, package, and dependency checks passed. DEVNOTES.md prefix comparison failed because Git stores LF while the Windows checkout includes CRLF.
+
+#### Evidence
+
+Node exit 1: AssertionError [ERR_ASSERTION]: DEVNOTES.md.
+
+#### Failures / Observations
+
+The comparison failed to account for checkout line endings; the journal content was not rewritten. This is a validation-script issue.
+
+#### Related DEVNOTES
+
+DEV-2026-10-29-002.
+
+#### Related Tests
+
+TEST-2026-10-29-001.
+
+#### Disposition
+
+Normalize line endings for textual history comparison and repeat validation.
+
+### TEST-2026-10-29-003 — License audit and corrected history validation
+
+**Date:** 2026-10-29
+**Time:** 10:49 America/New_York
+**Tester:** Codex /root
+**Level:** T0
+**Result:** PASS
+
+#### Scope
+
+Repository licensing consistency and static build validation.
+
+#### Files Under Validation
+
+LICENSE; README.md; docs/ANNOTATION_STANDARDS.md; docs/PORTFOLIO_CONTENT_PLAN.md; index.html; vite.config.ts; src/; scripts/check-navigation.cjs; package.json; package-lock.json; engineering journals.
+
+#### Objective
+
+Confirm current references consistently identify the proprietary root license while preserving dependency terms and historical evidence.
+
+#### Preconditions
+
+Dependencies installed; previous failed comparison identified as a line-ending mismatch.
+
+#### Procedure
+
+Search all authored repository text, including hidden configuration, excluding .git, node_modules, and generated dist. Inspect every licensing result. Repeat Node assertions from TEST-2026-10-29-002 with CRLF normalized to LF for journal comparison. Run npm.cmd run build, node --check scripts/check-navigation.cjs, and git diff --check.
+
+#### Expected Result
+
+Every authored source header references LICENSE; current guidance has no conflicting license example or license deferral; metadata agrees; third-party terms and historical records remain intact; static checks pass.
+
+#### Actual Result
+
+All eight source headers, both updated guidance documents, matching UNLICENSED package metadata, unchanged third-party lock entries, and normalized historical-prefix checks passed. Build transformed 15 modules successfully. Script syntax and whitespace checks passed. Historical licensing deferrals are explicitly closed by DEV-2026-10-29-002.
+
+#### Evidence
+
+Node output: PASS: 8 source headers, current license guidance, package metadata, unchanged third-party lock entries, and preserved journal history (normalized line endings). Vite build succeeded.
+
+#### Failures / Observations
+
+No runtime behavior changed; browser regression is unnecessary. Historical statements remain in append-only records with an explicit current disposition. The generic Pending confirmation placeholder remains only for unknown ownership/contact details.
+
+#### Related DEVNOTES
+
+DEV-2026-10-29-001; DEV-2026-10-29-002.
+
+#### Related Tests
+
+TEST-2026-10-29-002.
+
+#### Disposition
+
+Complete; no current licensing deferral remains.

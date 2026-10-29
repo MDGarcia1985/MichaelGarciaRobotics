@@ -2,6 +2,12 @@
 
 A responsive portfolio prototype built with TypeScript, Vite, YAML specifications, and CSS. The browser renders seven hash-routed pages from local YAML. Project case studies and blog publishing are not implemented yet.
 
+## License
+
+Copyright (c) 2026 Michael Garcia. All rights reserved. The website's original content, design, branding, and repository source are proprietary; see [LICENSE](LICENSE) for terms and permission requests. Third-party materials retain their respective licenses.
+
+The npm `license` field is `UNLICENSED` to identify this as a proprietary package. The root LICENSE supplies the terms for project-owned files, including configuration and documentation; source headers reference it.
+
 ## Run locally
 
 ```bash

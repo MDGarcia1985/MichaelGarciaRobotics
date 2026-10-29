@@ -23,11 +23,13 @@ Each header must identify:
 - purpose and primary responsibility;
 - author, owner, or contributors;
 - contact information or the project's canonical contact location;
-- project license, or a file-specific license when different;
+- project license: `Proprietary; see LICENSE at the repository root.` for project-owned files;
 - important architectural constraints when they are not apparent from the file;
 - related `DEVNOTES.md` IDs when a decision materially governs the file.
 
-Use `Pending confirmation` for required ownership, contact, or licensing information that is genuinely unknown. Do not invent it.
+The [root LICENSE](../LICENSE) governs project-owned source, configuration, documentation, and website materials. Use the license statement above in source headers; licensing is settled by DEV-2026-10-29-001. Preserve third-party license notices and file-specific terms for third-party material. The npm `UNLICENSED` value identifies the proprietary package; the root LICENSE contains its terms.
+
+Use `Pending confirmation` only for required ownership or contact information that is genuinely unknown. Do not invent it or use that placeholder for this project's license.
 
 Example:
 
@@ -45,7 +47,7 @@ Example:
  *     michael@mandedesign.studio
  *
  * License:
- *     SPDX-License-Identifier: MPL-2.0
+ *     Proprietary; see LICENSE at the repository root.
  *
  * Related Decisions:
  *     DEV-2026-08-21-003

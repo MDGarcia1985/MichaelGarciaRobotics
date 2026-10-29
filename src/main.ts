@@ -1,7 +1,7 @@
 /**
  * File: src/main.ts — render YAML-defined pages and homepage interactions.
  * Owner: Michael Garcia; contributor: Codex.
- * Contact: michael@mandedesign.studio. License: Pending confirmation.
+ * Contact: michael@mandedesign.studio. License: Proprietary; see LICENSE at the repository root.
  * Constraint: Preserve existing hash routes and session-only engagement state.
  * Related decisions: DEV-2026-10-23-002, DEV-2026-10-23-003.
  */

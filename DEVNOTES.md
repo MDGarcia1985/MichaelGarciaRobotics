@@ -491,3 +491,114 @@ None.
 ---
 
 ---
+
+### DEV-2026-10-29-001 — Proprietary website and repository license
+
+**Date:** 2026-10-29
+**Time:** 10:42 America/New_York
+**Engineer:** Codex /root
+**Status:** IMPLEMENTED
+**Type:** DECISION
+
+#### Problem
+
+The owner requested a proprietary root license preserving rights in the website, with implementation novelty not a priority.
+
+#### Context and Constraints
+
+Existing source headers identify Michael Garcia as owner but leave licensing pending. Third-party dependencies retain their own terms. Historical journal entries remain immutable.
+
+#### Solutions Considered
+
+A proprietary license covering owner-authored website material and source; or a separate permissive source license. Selected proprietary terms to match the request without granting unrequested reuse rights.
+
+#### Trade-offs
+
+Normal public website viewing and browser caching are permitted. Other reuse of protected material requires written permission unless allowed by law or a separate agreement. General ideas and functional concepts are excluded from exclusive claims. Third-party terms and hosting-platform rights remain unaffected.
+
+#### Final Outcome
+
+Added LICENSE naming Michael Garcia and reserving rights in original content, design, documentation, source, and branding as applicable. Supersedes the pending source-license disposition in DEV-2026-10-15-004. The npm license field is UNLICENSED; README and active file headers point to LICENSE.
+
+#### Implementation Impact
+
+LICENSE; README.md; package.json; package-lock.json root package metadata; license comments in index.html, src/, and scripts/check-navigation.cjs. No runtime logic changes.
+
+#### Verification Required
+
+T0 metadata consistency, license/header inspection, build, script syntax, and whitespace validation. No runtime behavior changes requiring browser regression.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-10-15-004
+- Tests: TEST-2026-10-29-001
+- Source: LICENSE; README.md; package.json; package-lock.json; index.html; src/; scripts/check-navigation.cjs
+
+#### Next Steps
+
+None.
+
+#### Deferred Decisions
+
+None.
+
+---
+
+---
+### DEV-2026-10-29-002 — Resolve current licensing guidance and historical deferrals
+
+**Date:** 2026-10-29
+**Time:** 10:49 America/New_York
+**Engineer:** Codex /root
+**Status:** IMPLEMENTED
+**Type:** DECISION
+
+#### Problem
+
+The owner requested a codebase-wide review and replacement of ambiguous licensing references and unresolved license statements.
+
+#### Context and Constraints
+
+LICENSE is authoritative. Engineering journals are append-only; earlier statements describe their original dates, not the current license. Third-party terms remain separate.
+
+#### Solutions Considered
+
+Correct current guidance and append a historical disposition, or rewrite earlier journal entries. Selected the documented append-only correction workflow.
+
+#### Trade-offs
+
+Historical wording remains available as evidence; this entry explicitly closes every historical source-license deferral found in the audit.
+
+#### Final Outcome
+
+Project-owned files are proprietary under root LICENSE. Replaced the MPL-2.0 header example, restricted unknown-metadata placeholders to ownership/contact information, aligned the portfolio plan, explained npm UNLICENSED metadata in README, and added the missing Vite config license header.
+
+Supersedes: the source-licensing deferrals in DEV-2026-09-24-001 and DEV-2026-10-15-002. Both are resolved by LICENSE and DEV-2026-10-29-001; no project license decision remains open.
+
+Correction to DEV-2026-10-29-001: the historical source-license deferral is in DEV-2026-10-15-002, not DEV-2026-10-15-004. The earlier entry's description of source headers concerns their state before LICENSE was added.
+
+#### Implementation Impact
+
+README.md; docs/ANNOTATION_STANDARDS.md; docs/PORTFOLIO_CONTENT_PLAN.md; vite.config.ts. Existing source headers and package metadata were reviewed. Dependency licenses were preserved.
+
+#### Verification Required
+
+T0 source/header and documentation audit, metadata consistency, unchanged dependency terms, journal preservation, build, script syntax, and whitespace checks.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-09-24-001; DEV-2026-10-15-002; DEV-2026-10-29-001
+- Tests: TEST-2026-10-29-002; TEST-2026-10-29-003
+- Source: LICENSE; README.md; docs/ANNOTATION_STANDARDS.md; docs/PORTFOLIO_CONTENT_PLAN.md; vite.config.ts
+
+#### Next Steps
+
+None.
+
+#### Deferred Decisions
+
+None for licensing.
+
+---
+
+---

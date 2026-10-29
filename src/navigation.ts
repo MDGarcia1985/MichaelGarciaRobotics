@@ -1,7 +1,7 @@
 /**
  * File: src/navigation.ts — shared click-operated navigation disclosure.
  * Owner: Michael Garcia; contributor: Codex.
- * Contact: michael@mandedesign.studio. License: Pending confirmation.
+ * Contact: michael@mandedesign.studio. License: Proprietary; see LICENSE at the repository root.
  * Constraint: Native links use the existing hash router; no new routing system.
  * Related decisions: DEV-2026-10-15-002, DEV-2026-10-15-003.
  */
