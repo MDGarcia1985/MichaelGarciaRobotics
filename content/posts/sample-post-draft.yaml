@@ -1,0 +1,15 @@
+# SAMPLE draft — must remain excluded from public indexes.
+id: sample-post-draft
+title: "SAMPLE · Draft excluded from public views"
+related_projects:
+  - sample-layout-demo
+cover_image:
+  src: /media/sample-draft-cover.jpg
+  alt: "Draft sample cover"
+  fit: cover
+excerpt: "This draft must not appear on discipline pages, project lists, or the blog."
+date: "2026-11-05"
+draft: true
+sample: true
+body: |
+  Draft fixture for validation of draft exclusion. Direct URL may still resolve for preview, with a draft banner.
