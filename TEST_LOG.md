@@ -1491,3 +1491,57 @@ TEST-2026-10-29-002.
 #### Disposition
 
 Complete; no current licensing deferral remains.
+### TEST-2026-11-11-001 — Publishing system build, content rules, and browser preview
+
+**Date:** 2026-11-11  
+**Time:** 02:10 UTC  
+**Engineer:** Cursor agent  
+**Level:** T3  
+**Result:** PASS  
+**Status:** Complete
+
+#### Objective
+
+Verify the projects/posts publishing slice: schema validation, image derivatives, production build, draft exclusion, discipline/project/blog/post routes, five desktop patterns, mobile stack, and hash deep-link refresh.
+
+#### Environment
+
+Node 22; npm; Vite preview on 127.0.0.1:4173; Chromium via computer-use agent.
+
+#### Procedure
+
+1. `npm run optimize-images` and `npm run validate-content`
+2. `npm run build`
+3. `npm run check:publishing`
+4. Browser: Home → Robotics SAMPLE → project page → post page → Blog → layouts-preview; mobile width stack; refresh on `#/project/sample-layout-demo`
+
+#### Expected Result
+
+Validation passes; derivatives under `public/media`; build succeeds; draft excluded from indexes; featured SAMPLE post drives discipline presentation; newest-first ordering; layouts-preview shows CMS field map and patterns; mobile Cover→Text→Image2→Image3; deep link survives refresh.
+
+#### Actual Result
+
+All static checks passed. Browser verification passed with no defects. Evidence screenshots and walkthrough video stored under the project media store.
+
+#### Evidence
+
+- `npm run build` succeeded (Vite client bundle)
+- `npm run check:publishing` reported 1 project, 3 posts, 2 published
+- Screenshots: step1–step8 under project media store
+- Video: publishing-system-walkthrough.mp4
+
+#### Failures / Observations
+
+None.
+
+#### Related DEVNOTES
+
+DEV-2026-11-11-001
+
+#### Related Tests
+
+None prior for this feature.
+
+#### Disposition
+
+Complete; ready for review PR (not production merge).

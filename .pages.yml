@@ -1,0 +1,209 @@
+# Pages CMS configuration for Michael Garcia Robotics.
+# Docs: https://pagescms.org/docs/configuration/
+# Media originals are preserved; npm run build generates public/media derivatives.
+
+media:
+  - name: originals
+    label: Photo originals
+    input: content/media/originals
+    output: /media
+    rename: safe
+    extensions: [jpg, jpeg, png, webp, gif]
+    # HEIC/HEIF are intentionally omitted — convert on-device or with Photos before upload.
+
+components:
+  content_image:
+    type: object
+    label: Image
+    fields:
+      - name: src
+        label: File
+        type: image
+        required: true
+        options:
+          media: originals
+      - name: alt
+        label: Alt text
+        type: string
+        required: true
+      - name: caption
+        label: Caption
+        type: string
+      - name: fit
+        label: Fit
+        type: select
+        description: "cover = intentional crop; contain = preserve complete technical frame"
+        options:
+          values:
+            - name: cover
+              label: Cover (crop)
+            - name: contain
+              label: Contain (full frame)
+      - name: focal_x
+        label: Focal X (%)
+        type: number
+        description: "0–100 horizontal focal point for cropped covers"
+      - name: focal_y
+        label: Focal Y (%)
+        type: number
+        description: "0–100 vertical focal point for cropped covers"
+
+content:
+  - name: projects
+    label: Projects
+    type: collection
+    path: content/projects
+    format: yaml
+    filename:
+      template: "{fields.id}.yaml"
+      field: create
+    view:
+      primary: name
+      sort: display_order
+      order: asc
+    fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+        description: "Lowercase kebab-case. Becomes the project URL: #/project/<id>"
+      - name: name
+        label: Name
+        type: string
+        required: true
+      - name: disciplines
+        label: Disciplines
+        type: select
+        required: true
+        options:
+          multiple: true
+          min: 1
+          values:
+            - name: robotics
+              label: Robotics
+            - name: software
+              label: Software
+            - name: design
+              label: Design
+      - name: display_order
+        label: Display order
+        type: number
+        required: true
+        description: Lower numbers appear first on discipline pages.
+      - name: featured_post
+        label: Featured post
+        type: reference
+        description: Published post that represents this project on discipline pages. Must list this project under related_projects.
+        options:
+          collection: posts
+          search: "title,fields.id"
+          value: "{fields.id}"
+          label: "{title}"
+      - name: discipline_layout
+        label: Discipline layout
+        type: select
+        required: true
+        description: Desktop pattern for discipline-page presentation. Preview all five at #/layouts-preview.
+        options:
+          values:
+            - name: pattern_a
+              label: "pattern_a — Cover lead, text rail"
+            - name: pattern_b
+              label: "pattern_b — Text lead, cover rail"
+            - name: pattern_c
+              label: "pattern_c — Cover banner"
+            - name: pattern_d
+              label: "pattern_d — Triptych focus"
+            - name: pattern_e
+              label: "pattern_e — Gallery over essay"
+      - name: sample
+        label: SAMPLE fixture
+        type: boolean
+        description: Marks layout/demo content. Keep false for real portfolio projects.
+
+  - name: posts
+    label: Posts
+    type: collection
+    path: content/posts
+    format: yaml
+    filename:
+      template: "{fields.id}.yaml"
+      field: create
+    view:
+      primary: title
+      sort: date
+      order: desc
+    fields:
+      - name: id
+        label: Stable ID
+        type: string
+        required: true
+        pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$'
+        description: "Lowercase kebab-case. Becomes the post URL: #/post/<id>"
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: related_projects
+        label: Related projects
+        type: reference
+        options:
+          collection: projects
+          multiple: true
+          search: "name,fields.id"
+          value: "{fields.id}"
+          label: "{name}"
+      - name: cover_image
+        label: Cover image
+        component: content_image
+      - name: image_2
+        label: Second image
+        component: content_image
+      - name: image_3
+        label: Third image
+        component: content_image
+      - name: excerpt
+        label: Excerpt
+        type: text
+        required: true
+        description: Shown on discipline pages and the blog index.
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: draft
+        label: Draft
+        type: boolean
+        required: true
+        description: Drafts are excluded from public discipline, project, and blog indexes.
+      - name: body
+        label: Body
+        type: rich-text
+        required: true
+        options:
+          format: markdown
+          media: false
+      - name: links
+        label: Links
+        type: object
+        list: true
+        fields:
+          - name: label
+            type: string
+            required: true
+          - name: url
+            type: string
+            required: true
+      - name: sample
+        label: SAMPLE fixture
+        type: boolean
+
+settings:
+  commit:
+    identity: user
+    templates:
+      create: "content(create): {path}"
+      update: "content(update): {path}"
+      delete: "content(delete): {path}"
+      rename: "content(rename): {oldPath} -> {newPath}"

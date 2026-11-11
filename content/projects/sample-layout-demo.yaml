@@ -1,0 +1,12 @@
+# SAMPLE fixture — layout and CMS mapping demonstration only.
+# Not a portfolio achievement claim. Safe to delete after real projects exist.
+id: sample-layout-demo
+name: "SAMPLE Layout Demonstration"
+disciplines:
+  - robotics
+  - software
+  - design
+display_order: 10
+featured_post: sample-post-featured
+discipline_layout: pattern_a
+sample: true

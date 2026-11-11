@@ -602,3 +602,57 @@ None for licensing.
 ---
 
 ---
+### DEV-2026-11-11-001 — Projects/posts publishing system with Pages CMS
+
+**Date:** 2026-11-11  
+**Time:** 02:10 UTC  
+**Engineer:** Cursor agent  
+**Status:** ACCEPTED  
+**Type:** DECISION
+
+#### Problem
+
+The portfolio needed a maintainable way for Michael to upload phone photos, write posts, associate them with projects, and publish through Pages CMS so discipline pages, project pages, and the blog stay organized from shared records.
+
+#### Context and Constraints
+
+The live architecture is a Vite + TypeScript hash-routed SPA with YAML page specs and a GitHub Pages deploy workflow. No custom auth or page builder. Preserve branding/navigation. Content standards live under `/docs`. Pages CMS edits GitHub files via `.pages.yml`.
+
+#### Solutions Considered
+
+- Migrate immediately to Astro/Markdown static routes (proposed earlier; larger cutover).
+- Keep the SPA shell and add shared YAML project/post collections, build-time validation/image derivatives, and hash detail routes.
+
+#### Trade-offs
+
+Hash routes keep GitHub Pages refresh behavior without SPA fallback files. Browser-bundled YAML is acceptable for a small editorial corpus; drafts must be excluded client-side and validated at build. Image originals stay in-repo for CMS simplicity.
+
+#### Final Outcome
+
+Implement shared `content/projects` and `content/posts` YAML collections, Pages CMS forms, five desktop layout patterns with a fixed mobile stack, build-time validation and sharp-based derivatives (GPS/EXIF stripped; HEIC refused), and SAMPLE fixtures for preview. Deploy still only from `master` via the existing workflow; this change ships as a reviewable PR without production merge.
+
+#### Implementation Impact
+
+`.pages.yml`; `content/**`; `public/media/**`; `scripts/validate-content.mjs`; `scripts/optimize-images.mjs`; `scripts/check-publishing.mjs`; `src/content/**`; `src/layouts/**`; `src/pages/**`; `src/main.ts`; `src/styles.css`; `package.json`; docs/README/ARCHITECTURE/IMAGE_PIPELINE.
+
+#### Verification Required
+
+Content validation, image optimize, `tsc`+Vite build, `check:publishing`, browser preview of discipline/project/blog/post/layouts-preview including mobile stack and hash refresh.
+
+#### Related Records
+
+- DEVNOTES: DEV-2026-09-24-001; DEV-2026-10-15-001
+- Tests: TEST-2026-11-11-001
+- Source: docs/IMAGE_PIPELINE.md; .pages.yml; content/
+
+#### Next Steps
+
+Michael connects Pages CMS to the repository after merge; replace SAMPLE fixtures with real projects/posts; merge only when ready to publish.
+
+#### Deferred Decisions
+
+Path-based HTML routes / Astro migration remain future work. HEIC conversion tooling is deferred to device export rather than CI HEIF support.
+
+---
+
+---

@@ -1,0 +1,23 @@
+# SAMPLE secondary post — verifies newest-first ordering and multi-post project pages.
+id: sample-post-secondary
+title: "SAMPLE · Second post on the same project"
+related_projects:
+  - sample-layout-demo
+cover_image:
+  src: /media/sample-image-3.jpg
+  alt: "Secondary sample cover"
+  fit: cover
+  focal_x: 55
+  focal_y: 40
+image_2:
+  src: /media/sample-cover.jpg
+  alt: "Secondary supporting image"
+  fit: contain
+excerpt: "A second SAMPLE post so project pages can show newest-first separation with horizontal rules."
+date: "2026-10-15"
+draft: false
+sample: true
+body: |
+  This older SAMPLE post confirms ordering on the project page and blog.
+
+  Horizontal rules and consistent spacing separate posts on the project page. Each post still has a stable direct URL.

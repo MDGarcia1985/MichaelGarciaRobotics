@@ -6,14 +6,20 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "optimize-images": "node scripts/optimize-images.mjs",
+    "validate-content": "node scripts/validate-content.mjs",
+    "prebuild": "npm run optimize-images && npm run validate-content",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:content": "npm run validate-content",
+    "check:publishing": "node scripts/check-publishing.mjs"
   },
   "dependencies": {
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
+    "sharp": "^0.35.5",
     "typescript": "^5.9.2",
     "vite": "^7.1.5"
   }

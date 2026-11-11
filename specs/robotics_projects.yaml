@@ -9,16 +9,5 @@ robotics_projects:
             color: burnt_auburn
 
         subtitle:
-            value: "Machines, embedded systems, autonomy, and physical problem solving."
+            value: "Machines, embedded systems, autonomy, and physical problem solving. Projects are shared records filtered by discipline."
             color: burnt_auburn
-
-    projects:
-        - id: soft_robotics_pneumatic
-          title: "Soft Robotics Pneumatic System"
-          status: "placeholder"
-          description: "Reserved for an embedded project demonstration or project page."
-
-        - id: embedded_control
-          title: "Embedded Control Systems"
-          status: "placeholder"
-          description: "Reserved for controller, sensing, and firmware work."

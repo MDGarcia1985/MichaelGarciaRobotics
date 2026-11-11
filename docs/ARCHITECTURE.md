@@ -1,26 +1,22 @@
 # Current implementation architecture
 
-Updated October 23, 2026. This document describes the checked-in source and local build workflow. External hosting, DNS, and GitHub account configuration were not inspected. The [migration review](ARCHITECTURE_ALIGNMENT_REVIEW.md) describes a proposed future architecture.
+Updated November 11, 2026. This document describes the checked-in source and local build workflow. External hosting, DNS, and GitHub account configuration were not inspected beyond the checked-in Pages deploy workflow. The [migration review](ARCHITECTURE_ALIGNMENT_REVIEW.md) still describes a longer-term Astro/path-route proposal.
 
 ## Runtime and build boundaries
 
 The application is a client-rendered, framework-free TypeScript single-page application. Vite bundles its source and CSS. `npm run build` runs `tsc` for strict type checking with no TypeScript emission, then Vite creates the production files in `dist/`. `npm run dev` starts Vite's development server; `npm run preview` serves the existing production output.
 
 ```text
-specs/*.yaml -- Vite ?raw imports --> src/specs.ts / js-yaml
-                                        |
-                                mainSpec + pageSpecs
-                                        |
-index.html / #app --> src/main.ts --> rendered DOM
-                         |                 |
-                 src/navigation.ts   src/styles.css
-                         |
-               location hash + browser history
+specs/*.yaml ---------------> src/specs.ts / js-yaml ----+
+content/projects|posts/*.yaml -> src/content/catalog.ts -+--> src/main.ts --> DOM
+content/media/originals ----> scripts/optimize-images --> public/media
+                          \-> scripts/validate-content (prebuild)
+.pages.yml --> Pages CMS (GitHub commits) --> push master --> deploy-pages.yml
 ```
 
-YAML is bundled as text and parsed in the browser, not validated and expanded into separate HTML pages at build time. `index.html` supplies the empty app root, global description, viewport metadata, and module entry. JavaScript is required to display page content. Page titles change at runtime; route-specific static metadata, canonical URLs, sitemap, and RSS output do not exist.
+Page shell YAML and content collections are bundled as text and parsed in the browser. Build-time scripts validate content integrity and emit public image derivatives before Vite bundles. `index.html` supplies the empty app root; JavaScript is required. Page titles change at runtime; sitemap/RSS are not implemented.
 
-There is no backend API, database, visitor authentication, CMS, or content-fetching service. The only application persistence is the engagement choice in `sessionStorage`. Imported specification contents are included in the client bundle; YAML is not a private-content store.
+There is no backend API, database, or visitor authentication. Editorial auth is GitHub + Pages CMS. The only browser persistence is the engagement choice in `sessionStorage`. Draft flags exclude posts from public indexes; treat drafts as unpublished rather than secret.
 
 ## Files and responsibilities
 
@@ -32,26 +28,33 @@ There is no backend API, database, visitor authentication, CMS, or content-fetch
 | About, Contact, and BLOG YAML files | Simple heading and paragraph arrays |
 | [src/specs.ts](../src/specs.ts) | Eight explicit raw imports: one global specification and seven page specifications; parses them and exports page-key lookup |
 | [src/types.ts](../src/types.ts) | Partial TypeScript contracts; flexible `Dict` values remain |
-| [src/main.ts](../src/main.ts) | Token lookup, route dispatch, DOM rendering, shared header/footer, navigation actions, engagement interaction |
+| [src/main.ts](../src/main.ts) | Token lookup, route dispatch (including project/post/layouts-preview), shared chrome, engagement |
+| [src/content/](../src/content/) | Project/post types and catalog queries (discipline filter, featured post, draft exclusion) |
+| [src/layouts/](../src/layouts/) | Five desktop patterns and four-panel post composition |
+| [src/pages/](../src/pages/) | Discipline, project, blog, post, and layouts-preview renderers |
 | [src/navigation.ts](../src/navigation.ts) | Menu disclosure, native hash links, keyboard/outside-click behavior, listener cleanup |
-| [src/styles.css](../src/styles.css) | Shared visual treatment, responsive geometry, focus styles, reduced-motion handling |
+| [src/styles.css](../src/styles.css) | Shared visual treatment, responsive geometry, publishing layouts |
+| [scripts/validate-content.mjs](../scripts/validate-content.mjs) | Unique IDs, references, featured-post ownership, HEIC rejection |
+| [scripts/optimize-images.mjs](../scripts/optimize-images.mjs) | Orientation, resize, compression, EXIF/GPS strip → `public/media` |
+| [scripts/check-publishing.mjs](../scripts/check-publishing.mjs) | Static publishing rule checks |
 | [scripts/check-navigation.cjs](../scripts/check-navigation.cjs) | Local production-build browser regression and evidence capture |
+| [.pages.yml](../.pages.yml) | Pages CMS collections, media, and relationship fields |
 
 The `website.pages` registry and `pageSpecs` map are maintained separately. The loader does not discover files from `website.pages[*].source`. The `architecture.plugin_interfacing: json` value expresses intent; there is no implemented plugin interface. Likewise, not every declarative positioning or typography field is consumed: actual layout comes from the renderer and stylesheet.
 
 ## Routes and rendering
 
-| Page key | Hash URL | Renderer |
+| Page key / pattern | Hash URL | Renderer |
 |---|---|---|
-| `homepage` | `#/` (an empty hash also opens Home) | Hero and discipline navigation |
-| `robotics_projects` | `#/robotics_projects` | Subject heading, subtitle, and cards |
-| `software_projects` | `#/software_projects` | Subject heading, subtitle, and cards |
-| `design_projects` | `#/design_projects` | Subject heading, subtitle, and cards |
-| `blog` | `#/blog` | Simple heading and paragraphs |
-| `about` | `#/about` | Simple heading and paragraphs |
-| `contact` | `#/contact` | Simple heading and paragraphs |
+| `homepage` | `#/` | Hero + Robotics/Software/Design/Blog |
+| `robotics_projects` etc. | `#/robotics_projects` | Discipline index from shared projects |
+| `blog` | `#/blog` | Published posts, newest first |
+| `about` / `contact` | `#/about`, `#/contact` | Simple paragraphs |
+| `project/<id>` | `#/project/<id>` | Project detail + associated posts |
+| `post/<id>` | `#/post/<id>` | Stable post URL |
+| `layouts-preview` | `#/layouts-preview` | All five patterns + CMS field map |
 
-`currentRoute()` reads the hash; `render()` looks it up in `pageSpecs`. Unknown keys navigate Home rather than rendering a 404. Keys ending in `_projects` select the subject renderer; the remaining non-Home pages use the simple renderer. There is no nested project/article route resolution.
+`currentRoute()` reads the hash. Nested `project/` and `post/` routes resolve before `pageSpecs` lookup. Unknown keys navigate Home.
 
 Menu anchors update the hash natively. Hero buttons, interior header Home buttons, and engagement choices call `navigate()`, which writes a history entry and renders the destination. Both `hashchange` and `popstate` trigger rendering. Refreshes work with hash URLs because the server receives the same application-shell path.
 
@@ -94,7 +97,7 @@ To add a page in the current architecture:
 5. Add intended navigation links and extend route/heading expectations in the browser regression.
 6. Run the build and relevant checks, then record the result under the engineering standards.
 
-TypeScript assertions around parsed YAML are not runtime schema validation. Malformed YAML can fail parsing; missing fields and invalid references are not comprehensively checked in advance. Simple text uses DOM text APIs, while project cards interpolate local YAML strings into `innerHTML`. A future richer-content pipeline needs an explicit escaping/media-validation contract; no Markdown or arbitrary remote-content authoring workflow is implemented today.
+Build-time `validate-content` enforces unique IDs, references, featured-post ownership, and image rules. Client loaders still trust validated YAML shape. Post bodies use a limited escaped Markdown subset (`src/lib/markdown.ts`); raw HTML is not passed through. Pages CMS is the authoring UI; there is no custom auth or page builder.
 
 ## Verification and engineering records
 
@@ -106,6 +109,4 @@ Coverage includes seven routes at 320×568, 375×667, 390×844, 430×932, 667×3
 
 ## Repository and deployment status
 
-This checkout has Git metadata, a configured remote named `origin`, a package lockfile, and ignore rules for dependencies, builds, caches, environment files, and logs. Remote connectivity and publication state were not verified in this review. There are no checked-in GitHub Actions workflows, Cloudflare deployment configuration, or runtime-version pin.
-
-The intended division is Squarespace for registration, GitHub for source/content/history/CI, and Cloudflare Pages for hosting. Those services are not verified by a successful local build. Astro, static per-page HTML, Markdown content collections, project/article media, feeds, schema checks, and optional Decap authoring remain future work described in the [migration proposal](ARCHITECTURE_ALIGNMENT_REVIEW.md). There is no `content/` tree or CMS implementation in the current checkout.
+This checkout has Git metadata, a configured remote named `origin`, a package lockfile, and ignore rules for dependencies, builds, caches, environment files, and logs. Remote connectivity and publication state were not verified in this review. GitHub Pages deploy is configured in [.github/workflows/deploy-pages.yml](../.github/workflows/deploy-pages.yml) on pushes to `master`. Pages CMS writes content through `.pages.yml`; image guidance is in [IMAGE_PIPELINE.md](IMAGE_PIPELINE.md). Astro/path-based HTML and feeds remain optional future work in the [migration proposal](ARCHITECTURE_ALIGNMENT_REVIEW.md).

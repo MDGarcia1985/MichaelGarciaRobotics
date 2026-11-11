@@ -1,0 +1,47 @@
+# SAMPLE fixture post — uses documented project themes without inventing results.
+id: sample-post-featured
+title: "SAMPLE · How posts present a project"
+related_projects:
+  - sample-layout-demo
+cover_image:
+  src: /media/sample-cover.jpg
+  alt: "Sample cover panel with editorial crop framing"
+  caption: "cover_image — intentional crop (fit: cover)"
+  focal_x: 42
+  focal_y: 35
+  fit: cover
+image_2:
+  src: /media/sample-image-2.jpg
+  alt: "Sample square technical diagram placeholder"
+  caption: "image_2 — complete frame preserved (fit: contain)"
+  fit: contain
+image_3:
+  src: /media/sample-image-3.jpg
+  alt: "Sample supporting photograph placeholder"
+  caption: "image_3 — optional; collapses when omitted"
+  focal_x: 50
+  focal_y: 60
+  fit: contain
+excerpt: "SAMPLE fixture showing cover, text, and supporting images. Discipline pages use this excerpt; project and post pages show the full body."
+date: "2026-11-01"
+draft: false
+sample: true
+body: |
+  ## What this SAMPLE demonstrates
+
+  This fixture exists so desktop patterns and the mobile stack can be inspected with the same content. It is **not** a claim about a shipped product.
+
+  ### Content reuse
+
+  Real portfolio posts should draw from documented work such as surgical trainers, embedded devices, and engineering platforms described in the repository source notes. Do not invent metrics or achievements.
+
+  ### Reading length
+
+  Long bodies remain fully readable. Text panels grow with content instead of clipping to a fixed height. Missing optional images collapse cleanly while the project link stays available.
+
+  - Cover uses an intentional crop with a focal point
+  - Supporting images default to containing the full frame
+  - Draft posts stay out of public indexes
+links:
+  - label: "Open layouts preview"
+    url: "#/layouts-preview"
